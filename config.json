@@ -12,7 +12,7 @@
     },
 
     "delta_t_sim": 0.05,
-    "delta_t_print": 0.12,
+    "delta_t_print": 0.1,
 
     "plot": true
 }
