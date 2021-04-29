@@ -1,8 +1,10 @@
 package ar.edu.itba.sds;
 
 import ar.edu.itba.sds.algos.Beeman;
+import ar.edu.itba.sds.algos.StepAlgorithm;
 import ar.edu.itba.sds.objects.Event;
 import ar.edu.itba.sds.objects.Particle;
+import ar.edu.itba.sds.objects.Step;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,12 +59,35 @@ public class DampedOscillation {
         long startTime = System.currentTimeMillis();
 
         // Simulation
-        new Beeman(f, deltaTimeSim, timeFinal, r0, v0);
-        // TODO: Simulation
+        // TODO: Select algorithm from available algorithms
+        final StepAlgorithm algo = new Beeman(f, deltaTimeSim, timeFinal, r0, v0, mass);
+        Step curStep = algo.getLastStep();
+        printStep(curStep);
+        while (algo.hasNext()) {
+            curStep = algo.next();
+            if (doubleMultiple(curStep.getTime(), deltaTimePrint)) {
+                printStep(curStep);
+            }
+        }
 
         // Print simulation time
         long endTime = System.currentTimeMillis();
         System.out.printf("Simulation time \t\t ⏱  %g seconds\n", (endTime - startTime) / 1000.0);
+    }
+
+    private static void printStep(Step step) {
+        try {
+            appendToFile(dynamicFilename, String.format("%.7E\n%.7E %.7E\n*", step.getTime(), step.getPos(), step.getAcc()));
+        } catch (IOException e) {
+            System.err.println("Error writing dynamic file");
+            System.exit(ERROR_STATUS);
+        }
+    }
+
+    private static void appendToFile(String filename, String s) throws IOException {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            writer.write(s);
+        }
     }
 
     private static void argumentParsing() throws ArgumentException {

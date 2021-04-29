@@ -1,31 +1,47 @@
 package ar.edu.itba.sds.algos;
 
+import ar.edu.itba.sds.objects.Step;
+
+import java.util.Iterator;
 import java.util.function.BiFunction;
 
-public class Beeman {
-    private final double[] pos;
-    private final double[] vel;
-    private final double[] acc;
-    private final BiFunction<Double, Double, Double> f;
-    private final double deltaT;
-    private double time;
-    private int nextIndex;
+public class Beeman extends StepAlgorithm {
 
-    public Beeman(BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0) {
-        int size = (int) Math.round(tf / deltaT) + 1;
-
-        this.pos = new double[size];
-        this.pos[0] = r0;
-        this.vel = new double[size];
-        this.vel[0] = v0;
-        this.acc = new double[size];
-        this.acc[0] = f.apply(r0, v0);
-
-        this.f = f;
-        this.deltaT = deltaT;
-        this.time = 0.0;
-        this.nextIndex = 1;
+    public Beeman(BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0, double mass) {
+        super(f, deltaT, tf, r0, v0, mass);
     }
 
+    @Override
+    public boolean hasNext() {
+        return lastIndex + 1 < pos.length;
+    }
 
+    @Override
+    public Step next() {
+        if (!hasNext()) throw new IndexOutOfBoundsException("No more timesteps!");
+
+        // Calculate x(t+dt)
+        pos[lastIndex + 1] = pos[lastIndex] + vel[lastIndex] * deltaT
+                        + 2.0 / 3.0 * acc[lastIndex] * deltaTSq
+                        - 1.0 / 6.0 * acc[lastIndex - 1] * deltaTSq;
+
+        // Predict v(t+dt)
+        vel[lastIndex + 1] = vel[lastIndex]
+                + 3.0 / 2.0 * acc[lastIndex] * deltaT
+                - 1.0 / 2.0 * acc[lastIndex - 1] * deltaT;
+
+        // Estimate a(t+dt) using x(t+dt) and predicted v(t+dt)
+        acc[lastIndex + 1] = f.apply(pos[lastIndex + 1], vel[lastIndex + 1]);
+
+        // Correct v(t+dt)
+        vel[lastIndex + 1] = vel[lastIndex]
+                + 1.0 / 3.0 * acc[lastIndex + 1] * deltaT
+                + 5.0 / 6.0 * acc[lastIndex] * deltaT
+                - 1.0 / 6.0 * acc[lastIndex - 1] * deltaT;
+
+        // Update lastTime and lastIndex
+        lastTime += deltaT;
+        lastIndex++;
+        return new Step(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
+    }
 }
