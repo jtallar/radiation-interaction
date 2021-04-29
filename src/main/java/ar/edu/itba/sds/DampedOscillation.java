@@ -1,9 +1,7 @@
 package ar.edu.itba.sds;
 
-import ar.edu.itba.sds.algos.Beeman;
+import ar.edu.itba.sds.algos.AlgorithmType;
 import ar.edu.itba.sds.algos.StepAlgorithm;
-import ar.edu.itba.sds.objects.Event;
-import ar.edu.itba.sds.objects.Particle;
 import ar.edu.itba.sds.objects.Step;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,6 +23,7 @@ public class DampedOscillation {
     private static final String DELTA_T_PRINT_CONFIG_KEY = "delta_t_print";
 
     private static final String OSC_OBJECT_CONFIG_KEY = "osc";
+    private static final String OSC_ALGO_CONFIG_KEY = "algo";
     private static final String OSC_MASS_CONFIG_KEY = "mass";
     private static final String OSC_K_CONFIG_KEY = "k";
     private static final String OSC_GAMMA_CONFIG_KEY = "gamma";
@@ -37,6 +36,7 @@ public class DampedOscillation {
     private static final int ERROR_STATUS = 1;
 
     private static String staticFilename, dynamicFilename;
+    private static AlgorithmType algorithmType;
     private static double mass, k, gamma, amp;
     private static double r0, v0;
     private static double time = 0.0, timeFinal;
@@ -53,18 +53,19 @@ public class DampedOscillation {
         }
         v0 = -amp * gamma  / (2.0 * mass);
 
+        // TODO: Delete dynamicFilename
+
         final BiFunction<Double, Double, Double> f = (r, v) -> -k * r - gamma * v;
 
         // Measure simulation time
         long startTime = System.currentTimeMillis();
 
         // Simulation
-        // TODO: Select algorithm from available algorithms
-        final StepAlgorithm algo = new Beeman(f, deltaTimeSim, timeFinal, r0, v0, mass);
-        Step curStep = algo.getLastStep();
+        final StepAlgorithm algorithm = StepAlgorithm.algorithmBuilder(algorithmType, f, deltaTimeSim, timeFinal, r0, v0, mass);
+        Step curStep = algorithm.getLastStep();
         printStep(curStep);
-        while (algo.hasNext()) {
-            curStep = algo.next();
+        while (algorithm.hasNext()) {
+            curStep = algorithm.next();
             if (doubleMultiple(curStep.getTime(), deltaTimePrint)) {
                 printStep(curStep);
             }
@@ -77,7 +78,7 @@ public class DampedOscillation {
 
     private static void printStep(Step step) {
         try {
-            appendToFile(dynamicFilename, String.format("%.7E\n%.7E %.7E\n*", step.getTime(), step.getPos(), step.getAcc()));
+            appendToFile(dynamicFilename, String.format("%.7E\n%.7E %.7E\n*\n", step.getTime(), step.getPos(), step.getAcc()));
         } catch (IOException e) {
             System.err.println("Error writing dynamic file");
             System.exit(ERROR_STATUS);
@@ -102,6 +103,9 @@ public class DampedOscillation {
             deltaTimePrint = getConfigDouble(config, DELTA_T_PRINT_CONFIG_KEY, v -> v > 0 && doubleMultiple(v, deltaTimeSim));
 
             final JSONObject oscObject = config.getJSONObject(OSC_OBJECT_CONFIG_KEY);
+            algorithmType = AlgorithmType.of(oscObject.getString(OSC_ALGO_CONFIG_KEY));
+            if (algorithmType == null) throw new ArgumentException("Invalid algorithm name");
+
             mass = getConfigDouble(oscObject, OSC_MASS_CONFIG_KEY, v -> v > 0);
             k = getConfigDouble(oscObject, OSC_K_CONFIG_KEY, v -> v > 0);
             gamma = getConfigDouble(oscObject, OSC_GAMMA_CONFIG_KEY, v -> v > 0);

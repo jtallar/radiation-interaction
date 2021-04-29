@@ -3,6 +3,7 @@
     "dynamic_file": "dynamic.txt",
 
     "osc": {
+        "algo": "Beeman",
         "mass": 70,
         "k": 1e4,
         "gamma": 100,

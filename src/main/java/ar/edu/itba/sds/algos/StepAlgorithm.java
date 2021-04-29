@@ -15,6 +15,17 @@ public abstract class StepAlgorithm implements Iterator<Step> {
     protected double lastTime;
     protected int lastIndex;
 
+    public static StepAlgorithm algorithmBuilder(AlgorithmType type, BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0, double mass) {
+        switch (type) {
+            case BEEMAN:
+                return new Beeman(f, deltaT, tf, r0, v0, mass);
+            case GEAR:
+            case VERLET:
+            default:
+                throw new IllegalArgumentException("Invalid algorithm type");
+        }
+    }
+
     protected StepAlgorithm(BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0, double mass) {
         int size = (int) Math.round(tf / deltaT) + 2; // [-dt; tf] including both ends
 
