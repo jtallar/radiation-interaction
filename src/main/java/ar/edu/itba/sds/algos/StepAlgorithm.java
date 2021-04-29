@@ -62,4 +62,9 @@ public abstract class StepAlgorithm implements Iterator<Step> {
     public Step getLastStep() {
         return new Step(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
     }
+
+    @Override
+    public boolean hasNext() {
+        return lastIndex + 1 < pos.length;
+    }
 }

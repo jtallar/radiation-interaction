@@ -2,18 +2,12 @@ package ar.edu.itba.sds.algos;
 
 import ar.edu.itba.sds.objects.Step;
 
-import java.util.Iterator;
 import java.util.function.BiFunction;
 
 public class Beeman extends StepAlgorithm {
 
     public Beeman(BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0, double mass) {
         super(f, deltaT, tf, r0, v0, mass);
-    }
-
-    @Override
-    public boolean hasNext() {
-        return lastIndex + 1 < pos.length;
     }
 
     @Override
