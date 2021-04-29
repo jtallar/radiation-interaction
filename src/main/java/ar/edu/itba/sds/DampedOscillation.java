@@ -7,6 +7,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -53,7 +55,13 @@ public class DampedOscillation {
         }
         v0 = -amp * gamma  / (2.0 * mass);
 
-        // TODO: Delete dynamicFilename
+        try {
+            Files.deleteIfExists(Paths.get(dynamicFilename));
+        } catch (IOException e) {
+            System.err.printf("Could not delete %s\n", dynamicFilename);
+            System.exit(ERROR_STATUS);
+            return;
+        }
 
         final BiFunction<Double, Double, Double> f = (r, v) -> -k * r - gamma * v;
 
