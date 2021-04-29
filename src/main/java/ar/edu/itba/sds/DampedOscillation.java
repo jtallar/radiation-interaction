@@ -1,11 +1,14 @@
 package ar.edu.itba.sds;
 
-import ar.edu.itba.sds.objects.Event;
-import ar.edu.itba.sds.objects.Particle;
+import ar.edu.itba.sds.algos.AlgorithmType;
+import ar.edu.itba.sds.algos.StepAlgorithm;
+import ar.edu.itba.sds.objects.Step;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -22,6 +25,7 @@ public class DampedOscillation {
     private static final String DELTA_T_PRINT_CONFIG_KEY = "delta_t_print";
 
     private static final String OSC_OBJECT_CONFIG_KEY = "osc";
+    private static final String OSC_ALGO_CONFIG_KEY = "algo";
     private static final String OSC_MASS_CONFIG_KEY = "mass";
     private static final String OSC_K_CONFIG_KEY = "k";
     private static final String OSC_GAMMA_CONFIG_KEY = "gamma";
@@ -29,9 +33,12 @@ public class DampedOscillation {
     private static final String OSC_R0_CONFIG_KEY = "r0";
     private static final String OSC_A_CONFIG_KEY = "A";
 
+    private static final double FLOAT_EPS = 1e-6;
+
     private static final int ERROR_STATUS = 1;
 
     private static String staticFilename, dynamicFilename;
+    private static AlgorithmType algorithmType;
     private static double mass, k, gamma, amp;
     private static double r0, v0;
     private static double time = 0.0, timeFinal;
@@ -47,18 +54,49 @@ public class DampedOscillation {
             return;
         }
         v0 = -amp * gamma  / (2.0 * mass);
-
         final BiFunction<Double, Double, Double> f = (r, v) -> -k * r - gamma * v;
+
+        // Delete dynamicFile if already exists
+        try {
+            Files.deleteIfExists(Paths.get(dynamicFilename));
+        } catch (IOException e) {
+            System.err.printf("Could not delete %s\n", dynamicFilename);
+            System.exit(ERROR_STATUS);
+            return;
+        }
 
         // Measure simulation time
         long startTime = System.currentTimeMillis();
 
         // Simulation
-        // TODO: Simulation
+        final StepAlgorithm algorithm = StepAlgorithm.algorithmBuilder(algorithmType, f, deltaTimeSim, timeFinal, r0, v0, mass);
+        Step curStep = algorithm.getLastStep();
+        printStep(curStep);
+        while (algorithm.hasNext()) {
+            curStep = algorithm.next();
+            if (doubleMultiple(curStep.getTime(), deltaTimePrint)) {
+                printStep(curStep);
+            }
+        }
 
         // Print simulation time
         long endTime = System.currentTimeMillis();
         System.out.printf("Simulation time \t\t ⏱  %g seconds\n", (endTime - startTime) / 1000.0);
+    }
+
+    private static void printStep(Step step) {
+        try {
+            appendToFile(dynamicFilename, String.format("%.7E\n%.7E %.7E\n*\n", step.getTime(), step.getPos(), step.getAcc()));
+        } catch (IOException e) {
+            System.err.println("Error writing dynamic file");
+            System.exit(ERROR_STATUS);
+        }
+    }
+
+    private static void appendToFile(String filename, String s) throws IOException {
+        try(BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            writer.write(s);
+        }
     }
 
     private static void argumentParsing() throws ArgumentException {
@@ -69,14 +107,17 @@ public class DampedOscillation {
             JSONObject config = new JSONObject(reader.lines().collect(Collectors.joining()));
             staticFilename = config.getString(STATIC_CONFIG_KEY);
             dynamicFilename = config.getString(DYNAMIC_CONFIG_KEY);
-            deltaTimeSim = getConfigDouble(config, DELTA_T_SIM_CONFIG_KEY, v -> true);
-            deltaTimePrint = getConfigDouble(config, DELTA_T_PRINT_CONFIG_KEY, v -> v % deltaTimeSim == 0);
+            deltaTimeSim = getConfigDouble(config, DELTA_T_SIM_CONFIG_KEY, v -> v > 0);
+            deltaTimePrint = getConfigDouble(config, DELTA_T_PRINT_CONFIG_KEY, v -> v > 0 && doubleMultiple(v, deltaTimeSim));
 
             final JSONObject oscObject = config.getJSONObject(OSC_OBJECT_CONFIG_KEY);
+            algorithmType = AlgorithmType.of(oscObject.getString(OSC_ALGO_CONFIG_KEY));
+            if (algorithmType == null) throw new ArgumentException("Invalid algorithm name");
+
             mass = getConfigDouble(oscObject, OSC_MASS_CONFIG_KEY, v -> v > 0);
             k = getConfigDouble(oscObject, OSC_K_CONFIG_KEY, v -> v > 0);
             gamma = getConfigDouble(oscObject, OSC_GAMMA_CONFIG_KEY, v -> v > 0);
-            timeFinal = getConfigDouble(oscObject, OSC_TF_CONFIG_KEY, v -> v > 0);
+            timeFinal = getConfigDouble(oscObject, OSC_TF_CONFIG_KEY, v -> v > 0 &&  doubleMultiple(v, deltaTimeSim));
             r0 = getConfigDouble(oscObject, OSC_R0_CONFIG_KEY, v -> true);
             amp = getConfigDouble(oscObject, OSC_A_CONFIG_KEY, v -> v > 0);
         } catch (FileNotFoundException e) {
@@ -86,6 +127,17 @@ public class DampedOscillation {
         } catch (JSONException e) {
             throw new ArgumentException("Missing configurations in config file. Must define \"static_file\", \"dynamic_file\" and \"osc\".");
         }
+    }
+
+
+    /**
+     * @param value double to check if valid
+     * @param k factor to be multiple of
+     * @return true if value ~= k * integer
+     */
+    private static boolean doubleMultiple(double value, double k) {
+        if (value % k < FLOAT_EPS) return true;
+        return Math.abs(value % k - k) < FLOAT_EPS;
     }
 
     private static double getConfigDouble(JSONObject config, String key, Predicate<Double> validator) throws ArgumentException {
