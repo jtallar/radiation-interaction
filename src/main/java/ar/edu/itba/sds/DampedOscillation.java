@@ -54,7 +54,9 @@ public class DampedOscillation {
             return;
         }
         v0 = -amp * gamma  / (2.0 * mass);
+        final BiFunction<Double, Double, Double> f = (r, v) -> -k * r - gamma * v;
 
+        // Delete dynamicFile if already exists
         try {
             Files.deleteIfExists(Paths.get(dynamicFilename));
         } catch (IOException e) {
@@ -62,8 +64,6 @@ public class DampedOscillation {
             System.exit(ERROR_STATUS);
             return;
         }
-
-        final BiFunction<Double, Double, Double> f = (r, v) -> -k * r - gamma * v;
 
         // Measure simulation time
         long startTime = System.currentTimeMillis();
