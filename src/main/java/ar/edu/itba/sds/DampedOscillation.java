@@ -33,7 +33,7 @@ public class DampedOscillation {
     private static final String OSC_R0_CONFIG_KEY = "r0";
     private static final String OSC_A_CONFIG_KEY = "A";
 
-    private static double FLOAT_EPS = 1e-6;
+    private static final double FLOAT_EPS = 1e-6;
 
     private static final int ERROR_STATUS = 1;
 
