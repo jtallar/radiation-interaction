@@ -45,6 +45,7 @@ else:
     y_superlist = []
     legend_list = []
     for filename in dynamic_files:
+        # TODO: Change file format (ALGO-dt.txt)
         algo = filename[:-4] # Take filename without .txt extension
         metric = anl.analyze_osc(filename, algo, mass, k, gamma, amp, False, delta_t)
         x_superlist.append(metric.time_vec)
