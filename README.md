@@ -33,10 +33,10 @@ Run `python3 generator.py`, using the following parameters from `config.json`:
 
    `static_file`, `dynamic_file`, `N`, `L`, `small_radius`, `small_mass`, `big_radius`, `big_mass`, `max_v_mod`
 
-## Simulation
+## Simulation 1
 To generate executable and run the life simulation
-1. Run `./prepare.sh` in root to generate executable (only required once).
-2. Run `./target/tp4-simu-1.0/brownian-motion.sh`, using the following parameters from `config.json`:
+1. Run `./prepare.sh` in root to generate executables (only required once).
+2. Run `./target/tp4-simu-1.0/damped-osc.sh`, using the following parameters from `config.json`:
    
    `static_file`, `dynamic_file`, `max_events`
 
