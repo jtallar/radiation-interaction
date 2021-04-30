@@ -149,7 +149,9 @@ public class DampedOscillation {
                 throw new ArgumentException(String.format("Invalid %s param", DELTA_T_PARAM));
             }
             deltaTimeSim = deltaTimePrint = value;
-            // If dt set by param, rename dynamic file with algorithm and dt
+        }
+        // If dt or algo were set by param, rename dynamic file with algorithm and dt
+        if (algorithmName != null || deltaTimeProp != null) {
             dynamicFilename = String.format("%s-%s.txt", algorithmType.name(), deltaTimeSim);
         }
     }
