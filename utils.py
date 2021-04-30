@@ -167,14 +167,18 @@ def plot_values_with_adjust(x_values, x_label, y_values, y_label, precision=2, s
 
     return c
 
-def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_label, legend_list, precision=2, sci=True, min_val=None, max_val=None, save_name=None):
+def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_label, legend_list, precision=2, sci=True, min_val=None, max_val=None, log=False, legend_loc='upper right', save_name=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
 
     colors = []
     for i in range(len(x_values_superlist)):
         p = ax.plot(x_values_superlist[i], y_values_superlist[i], label=legend_list[i])  # Plot some data on the axes
         colors.append(p[-1].get_color())
-        
+
+    if log:
+        ax.set_xscale('log')
+        ax.set_yscale('log')
+
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     
@@ -183,13 +187,13 @@ def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_labe
         ax.set_ylim([min_val, max_val])
 
     if sci:
-        ax.ticklabel_format(scilimits=(0,0))
+        if not log: ax.ticklabel_format(scilimits=(0,0))
         ax.xaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
         ax.yaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
 
     plt.tight_layout()
     plt.grid()
-    fig.legend(loc='upper right')
+    plt.legend(loc=legend_loc)
     if save_name:
         plt.savefig(save_name)
     else:

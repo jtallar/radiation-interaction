@@ -20,6 +20,8 @@ dynamic_filename = utils.read_config_param(
     config, "dynamic_file", lambda el : el, lambda el : True)
 plot_boolean = utils.read_config_param(
     config, "plot", lambda el : bool(el), lambda el : True)
+delta_t = utils.read_config_param(
+    config, "delta_t_sim", lambda el : float(el), lambda el : el > 0)
 # Read OSC params
 algo = utils.read_config_param(
     config["osc"], "algo", lambda el : el, lambda el : True)
@@ -32,7 +34,7 @@ gamma = utils.read_config_param(
 amp = utils.read_config_param(
     config["osc"], "A", lambda el : float(el), lambda el : el > 0)
 
-metrics = anl.analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean)
+metrics = anl.analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta_t)
 
 # If out filename provided, print to file
 if out_filename:

@@ -5,7 +5,7 @@ import objects as obj
 def exact_solution(t, mass, k, gamma, amp):
     return amp * math.exp(-t * gamma / (2 * mass)) * math.cos(t * math.sqrt(k / mass - gamma * gamma / (4 * mass * mass)))
 
-def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean):
+def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta_t):
     dynamic_file = open(dynamic_filename, "r")
 
     # Initial values
@@ -15,6 +15,7 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean):
     time_vec = []
     exact_sol = []
     algo_sol = []
+    ecm_sum = 0
 
     for linenum, line in enumerate(dynamic_file):
         if restart:
@@ -34,10 +35,17 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean):
         algo_sol.append(part.x)
         exact_sol.append(exact_solution(time, mass, k, gamma, amp))
 
+        # Save Error cuadratico sum
+        ecm_sum += (algo_sol[-1] - exact_sol[-1]) ** 2
+
         p_id += 1
 
     # Close files
     dynamic_file.close()
+
+    # Calculate ECM
+    ecm = ecm_sum / len(exact_sol)
+    print(f'ECM for {algo} with dt {delta_t} = {ecm:.7E}\n')
 
     # Plot values
     if plot_boolean:
@@ -50,7 +58,7 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean):
             'tiempo (s)',
             [exact_sol, algo_sol],
             'posición (m)',
-            ['exact', algo],
+            ['Analítica', algo],
             sci=False
         )
 
