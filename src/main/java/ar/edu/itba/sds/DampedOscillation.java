@@ -69,7 +69,7 @@ public class DampedOscillation {
         long startTime = System.currentTimeMillis();
 
         // Simulation
-        final StepAlgorithm algorithm = StepAlgorithm.algorithmBuilder(algorithmType, f, deltaTimeSim, timeFinal, r0, v0, mass);
+        final StepAlgorithm algorithm = StepAlgorithm.algorithmBuilder(algorithmType, f, deltaTimeSim, timeFinal, r0, v0, mass, k);
         Step curStep = algorithm.getLastStep();
         printStep(curStep);
         while (algorithm.hasNext()) {

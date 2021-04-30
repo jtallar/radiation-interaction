@@ -15,10 +15,10 @@ public class Verlet extends StepAlgorithm {
         if (!hasNext()) throw new IndexOutOfBoundsException("No more timesteps!");
 
         // Calculate x(t+dt)
-        pos[lastIndex + 1] = 2 * pos[lastIndex] - pos[lastIndex - 1] + deltaTSq / acc[lastIndex];
+        pos[lastIndex + 1] = 2 * pos[lastIndex] - pos[lastIndex - 1] + deltaTSq * acc[lastIndex];
 
-        // Predict v(t+dt)
-        vel[lastIndex + 1] = (pos[lastIndex + 1] - pos[lastIndex - 1]) / 2 * deltaT;
+        // Calculate v(t+dt)
+        vel[lastIndex + 1] = (pos[lastIndex + 1] - pos[lastIndex - 1]) / (2 * deltaT);
 
         // Estimate a(t+dt) using x(t+dt) and predicted v(t+dt)
         acc[lastIndex + 1] = f.apply(pos[lastIndex + 1], vel[lastIndex + 1]) / mass;

@@ -36,6 +36,7 @@ public class Beeman extends StepAlgorithm {
         // Update lastTime and lastIndex
         lastTime += deltaT;
         lastIndex++;
+
         return new Step(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
     }
 }
