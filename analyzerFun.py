@@ -64,3 +64,5 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
 
         # Hold execution
         utils.hold_execution()
+    
+    return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)

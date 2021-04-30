@@ -141,6 +141,17 @@ class ParticleNode(object):
     def __repr__(self):
         return "Node{%s, next=%s}" % (self.particle, self.next)
 
+class AnalysisOsc(object):
+    def __init__(self, algo, dt, time_vec, exact_sol, algo_sol, ecm):
+        self.algo = algo
+        self.dt = dt
+        self.time_vec = time_vec
+        self.exact_sol = exact_sol
+        self.algo_sol = algo_sol
+        self.ecm = ecm
+
+
+###################### OLD ######################
 class IdDistance(object):
     def __init__(self, id, dist):
         self.id = id

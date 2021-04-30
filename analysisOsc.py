@@ -5,9 +5,9 @@ import utils
 import analyzerFun as anl
 
 # Read out filename param if provided
-out_filename = None
+dynamic_files = None
 if len(sys.argv) >= 2:
-    out_filename = sys.argv[1]
+    dynamic_files = sys.argv[1:]
 
 # Read params from config.json
 with open("config.json") as file:
@@ -34,16 +34,38 @@ gamma = utils.read_config_param(
 amp = utils.read_config_param(
     config["osc"], "A", lambda el : float(el), lambda el : el > 0)
 
-metrics = anl.analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta_t)
+if dynamic_files is None:
+    # Perform one analysis, analytic vs one algorithm
+    # python analysisOsc.py
+    anl.analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta_t)
+else:
+    # Same dt, different algorithms + analytic
+    # python analysisOsc.py beeman.txt verlet.txt gpc5.txt
+    x_superlist = []
+    y_superlist = []
+    legend_list = []
+    for filename in dynamic_files:
+        algo = filename[:-4] # Take filename without .txt extension
+        metric = anl.analyze_osc(filename, algo, mass, k, gamma, amp, False, delta_t)
+        x_superlist.append(metric.time_vec)
+        y_superlist.append(metric.algo_sol)
+        legend_list.append(metric.algo)
+    x_superlist.append(metric.time_vec)
+    y_superlist.append(metric.exact_sol)
+    legend_list.append("analítica")
 
-# If out filename provided, print to file
-if out_filename:
-    with open(out_filename, "w") as file:
-        file.write(
-            f'{metrics.N}\n'
-            f'{init_max_v_mod}\n'
-            f'{metrics.collision_count}\n'
-            f'{metrics.collision_freq}\n'
-            f'{metrics.avg_intercollision_time:.7E}\n'
-            f'{metrics.kinetic_energy:.7E}\n'
-        )
+    # Initialize plotting
+    utils.init_plotter()
+
+    # Plot real trajectory with estimated one
+    utils.plot_multiple_values(
+        x_superlist,
+        'tiempo (s)',
+        y_superlist,
+        'posición (m)',
+        legend_list,
+        sci=False
+    )
+
+    # Hold execution
+    utils.hold_execution()    
