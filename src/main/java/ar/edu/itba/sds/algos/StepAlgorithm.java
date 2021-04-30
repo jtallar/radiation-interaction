@@ -40,7 +40,7 @@ public abstract class StepAlgorithm implements Iterator<Step> {
         this.vel = new double[size];
         this.vel[1] = v0;
         this.acc = new double[size];
-        this.acc[1] = f.apply(r0, v0);
+        this.acc[1] = f.apply(r0, v0) / this.mass;
 
         final Step prevStep = eulerPrecedingStep(this.lastTime, this.pos[1], this.vel[1], this.acc[1]);
         this.pos[0] = prevStep.getPos();
@@ -50,11 +50,11 @@ public abstract class StepAlgorithm implements Iterator<Step> {
         this.lastIndex = 1;
     }
 
-    // TODO: Check formula (replaced deltaT in diapo 10 with -deltaT)
+    // TODO: Check, pero creo que va bien
     private Step eulerPrecedingStep(double t, double r, double v, double a) {
         double rPrev = r - deltaT * v + deltaTSq * a / (2.0 * mass);
         double vPrev = v - deltaT / mass * a;
-        double aPrev = f.apply(rPrev, vPrev);
+        double aPrev = f.apply(rPrev, vPrev) / mass;
 
         return new Step(t - deltaT, rPrev, vPrev, aPrev);
     }

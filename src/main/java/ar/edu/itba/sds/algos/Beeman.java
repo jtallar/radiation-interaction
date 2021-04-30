@@ -25,7 +25,7 @@ public class Beeman extends StepAlgorithm {
                 - 1.0 / 2.0 * acc[lastIndex - 1] * deltaT;
 
         // Estimate a(t+dt) using x(t+dt) and predicted v(t+dt)
-        acc[lastIndex + 1] = f.apply(pos[lastIndex + 1], vel[lastIndex + 1]);
+        acc[lastIndex + 1] = f.apply(pos[lastIndex + 1], vel[lastIndex + 1]) / mass;
 
         // Correct v(t+dt)
         vel[lastIndex + 1] = vel[lastIndex]
