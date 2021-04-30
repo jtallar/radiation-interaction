@@ -18,6 +18,9 @@ public class DampedOscillation {
     private static final String DEFAULT_CONFIG = "config.json";
     private static final String CONFIG_PARAM = "config";
 
+    private static final String DELTA_T_PARAM = "dt";
+    private static final String ALGORITHM_PARAM = "algo";
+
     private static final String STATIC_CONFIG_KEY = "static_file";
     private static final String DYNAMIC_CONFIG_KEY = "dynamic_file";
 
@@ -64,6 +67,8 @@ public class DampedOscillation {
             System.exit(ERROR_STATUS);
             return;
         }
+
+        System.out.printf("Running %s with dt_sim=%.3E and dt_print=%.3E. \nOutput to %s\n\n", algorithmType.name(), deltaTimeSim, deltaTimePrint, dynamicFilename);
 
         // Measure simulation time
         long startTime = System.currentTimeMillis();
@@ -126,6 +131,28 @@ public class DampedOscillation {
             throw new ArgumentException("Error parsing config file");
         } catch (JSONException e) {
             throw new ArgumentException("Missing configurations in config file. Must define \"static_file\", \"dynamic_file\" and \"osc\".");
+        }
+
+        // Check properties to override parameters for faster simulation repetition
+        String algorithmName = properties.getProperty(ALGORITHM_PARAM);
+        if (algorithmName != null) {
+            algorithmType = AlgorithmType.of(algorithmName);
+            if (algorithmType == null) throw new ArgumentException("Invalid algorithm name");
+        }
+        String deltaTimeProp = properties.getProperty(DELTA_T_PARAM);
+        if (deltaTimeProp != null) {
+            double value;
+            try {
+                value = Double.parseDouble(deltaTimeProp);
+                if (value <= 0) throw new NumberFormatException();
+            } catch (NumberFormatException e) {
+                throw new ArgumentException(String.format("Invalid %s param", DELTA_T_PARAM));
+            }
+            deltaTimeSim = deltaTimePrint = value;
+        }
+        // If dt or algo were set by param, rename dynamic file with algorithm and dt
+        if (algorithmName != null || deltaTimeProp != null) {
+            dynamicFilename = String.format("%s-%s.txt", algorithmType.name(), deltaTimeSim);
         }
     }
 

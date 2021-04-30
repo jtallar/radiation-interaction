@@ -38,12 +38,10 @@ target/
 *.project
 
 # Output and data folders
-simu.xyz
-static.txt
-dynamic.txt
 data_dir*/
 pics_*/
-out_console.txt
+*.txt
+*.xyz
 
 # Python section
 # Byte-compiled / optimized / DLL files
