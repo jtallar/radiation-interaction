@@ -15,12 +15,12 @@ public abstract class StepAlgorithm implements Iterator<Step> {
     protected double lastTime;
     protected int lastIndex;
 
-    public static StepAlgorithm algorithmBuilder(AlgorithmType type, BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0, double mass) {
+    public static StepAlgorithm algorithmBuilder(AlgorithmType type, BiFunction<Double, Double, Double> f, double deltaT, double tf, double r0, double v0, double mass, double k) {
         switch (type) {
             case BEEMAN:
                 return new Beeman(f, deltaT, tf, r0, v0, mass);
             case GEAR:
-                return new Gear(f, deltaT, tf, r0, v0, mass);
+                return new Gear(f, deltaT, tf, r0, v0, mass, k);
             case VERLET:
                 return new Verlet(f, deltaT, tf, r0, v0, mass);
             default:
