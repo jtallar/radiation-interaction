@@ -54,18 +54,19 @@ else:
     y_superlist.append(metric.exact_sol)
     legend_list.append("analítica")
 
-    # Initialize plotting
-    utils.init_plotter()
+    if plot_boolean:
+        # Initialize plotting
+        utils.init_plotter()
 
-    # Plot real trajectory with estimated one
-    utils.plot_multiple_values(
-        x_superlist,
-        'tiempo (s)',
-        y_superlist,
-        'posición (m)',
-        legend_list,
-        sci=False
-    )
+        # Plot real trajectory with estimated one
+        utils.plot_multiple_values(
+            x_superlist,
+            'tiempo (s)',
+            y_superlist,
+            'posición (m)',
+            legend_list,
+            sci=False
+        )
 
-    # Hold execution
-    utils.hold_execution()    
+        # Hold execution
+        utils.hold_execution()    
