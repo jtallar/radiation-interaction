@@ -7,10 +7,10 @@ def invalid_param(param_name):
     print(f'Error in config. Invalid or missing {param_name}!')
     sys.exit(1)
 
-def read_config_param(config, param_name, converter_fun, invalid_fun):
+def read_config_param(config, param_name, converter_fun, valid_fun):
     if param_name in config:
         param = converter_fun(config[param_name])
-        if not invalid_fun(param):
+        if valid_fun(param):
             return param
     invalid_param(param_name)
 
@@ -167,12 +167,12 @@ def plot_values_with_adjust(x_values, x_label, y_values, y_label, precision=2, s
 
     return c
 
-def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_label, precision=2, sci=True, min_val=None, max_val=None, save_name=None):
+def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_label, legend_list, precision=2, sci=True, min_val=None, max_val=None, save_name=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
 
     colors = []
     for i in range(len(x_values_superlist)):
-        p = ax.plot(x_values_superlist[i], y_values_superlist[i])  # Plot some data on the axes
+        p = ax.plot(x_values_superlist[i], y_values_superlist[i], label=legend_list[i])  # Plot some data on the axes
         colors.append(p[-1].get_color())
         
     ax.set_xlabel(x_label)
@@ -187,9 +187,9 @@ def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_labe
         ax.xaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
         ax.yaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
 
-    fig.legend(loc='upper left')
-    plt.grid()
     plt.tight_layout()
+    plt.grid()
+    fig.legend(loc='upper right')
     if save_name:
         plt.savefig(save_name)
     else:

@@ -1,6 +1,61 @@
 import math
 import statistics as sts
 
+class Particle1D(object):
+    def __init__(self, id, x=0, vx=0,r=0, m=0):
+        """Returns a Particle object with the given coordinates
+
+        Parameters
+        ----------
+        id : int
+            Particle id
+        x : float
+            Single coordinate
+        vx : float
+            Single speed
+        r : float
+            Particle radius
+        m : float
+            Particle mass
+        """
+
+        self.id = id
+        self.x = x
+        self.vx = vx
+        self.r = r
+        self.m = m
+
+    def center_distance(self, other):
+        return abs(self.x - other.x)
+
+    def border_distance(self, other):
+        return self.center_distance(other) - self.r - other.r
+
+    def get_point(self):
+        return (self.x)
+
+    def get_v_mod(self):
+        return abs(self.vx)
+
+    def collides_with_wall(self, side):
+        return (self.x + self.r) >= side or (self.x - self.r) <= 0.0
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "Particle %s(%.2f;v=%.2f)" % (self.id, self.x, self.vx)
+
+    # Define hash and eq methods to allow key usage
+    def __hash__(self):
+        return hash(self.x)
+
+    def __eq__(self, other):
+        return (self.x) == (other.x)
+
+    def __ne__(self, other):
+        return not (self == other)
+
 class Particle(object):
 
     def __init__(self, id, x=0, y=0, vx=0, vy=0, r=0, m=0):
