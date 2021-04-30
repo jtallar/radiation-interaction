@@ -2,9 +2,9 @@ import utils
 
 # 1. Turn off plotting in config --> plot: false
 # 2. Run multiple simulations with different dts and all algos
-# ./target/tp4-simu-1.0/damped-osc.sh -Dalgo=beeman -Ddt=0.0001 --> beeman0.0001.txt
-# python analysisOsc.py beeman0.0001.txt verlet0.0001.txt gpc50.0001.txt
-# 3. Replace delta_t values and ecms below
+# ./target/tp4-simu-1.0/damped-osc.sh -Dalgo=Beeman -Ddt=0.0001 --> BEEMAN-0.0001.txt
+# python analysisOsc.py BEEMAN-0.0001.txt BEEMAN-0.001.txt BEEMAN-0.01.txt
+# 3. Replace delta_t values and ecms below with obtained values
 # 4. Run python aux_analysisOscDelta.py
 
 # Replace delta_t values here (delta_t_sim = delta_t_print)
@@ -14,7 +14,7 @@ ecms_beeman = [3.4817385E-14, 2.1685357E-11, 3.4546452E-10, 2.0853237E-07, 3.193
 # Replace ecm values for verlet here
 ecms_verlet = [3.4817385E-14, 2.1685357E-11, 3.4546452E-10, 2.0853237E-07, 3.1937059E-06, 1.4876862E-03, 1.8503093E-02]
 # Replace ecm values for gpc5 here
-ecms_gpc5 = [3.4817385E-14, 2.1685357E-11, 3.4546452E-10, 2.0853237E-07, 3.1937059E-06, 1.4876862E-03, 1.8503093E-02]
+ecms_gear_5 = [3.4817385E-14, 2.1685357E-11, 3.4546452E-10, 2.0853237E-07, 3.1937059E-06, 1.4876862E-03, 1.8503093E-02]
 
 # Initialize plotting
 utils.init_plotter()
