@@ -20,7 +20,9 @@ public abstract class StepAlgorithm implements Iterator<Step> {
             case BEEMAN:
                 return new Beeman(f, deltaT, tf, r0, v0, mass);
             case GEAR:
+                return new Gear(f, deltaT, tf, r0, v0, mass);
             case VERLET:
+                return new Verlet(f, deltaT, tf, r0, v0, mass);
             default:
                 throw new IllegalArgumentException("Invalid algorithm type");
         }
