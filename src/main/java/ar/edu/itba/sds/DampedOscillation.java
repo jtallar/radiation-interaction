@@ -154,7 +154,7 @@ public class DampedOscillation {
         }
         // If dt or algo were set by param, rename dynamic file with algorithm and dt
         if (algorithmName != null || deltaTimeProp != null) {
-            dynamicFilename = String.format("%s-%s.txt", algorithmType.name(), deltaTimeSim);
+            dynamicFilename = String.format("%s-%.2E.txt", algorithmType.name(), deltaTimeSim);
         }
     }
 

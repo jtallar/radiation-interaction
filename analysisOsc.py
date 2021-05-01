@@ -46,7 +46,7 @@ else:
     legend_list = []
     for filename in dynamic_files:
         # Expected filename format: ALGO-dt.txt
-        name_data = filename[:-4].split('-') # Take filename without .txt extension
+        name_data = filename[:-4].split('-', 1) # Take filename without .txt extension
         metric = anl.analyze_osc(filename, name_data[0].lower(), mass, k, gamma, amp, False, float(name_data[1]))
         x_superlist.append(metric.time_vec)
         y_superlist.append(metric.algo_sol)
