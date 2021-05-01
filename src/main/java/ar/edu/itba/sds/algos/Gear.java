@@ -16,11 +16,11 @@ public class Gear extends StepAlgorithm {
         super(f, deltaT, tf, r0, v0, mass);
         this.alpha = new double[]{(3.0 / 16.0), (251.0 / 360), 1.0, (11.0 / 18.0), (1.0 / 6.0), (1.0 / 60.0)};
         this.r3 = new double[pos.length];
-        this.r3[1] = f.apply(vel[1], acc[1]);
+        this.r3[1] = f.apply(vel[1], acc[1]) / mass;
         this.r4 = new double[pos.length];
-        this.r4[1] = f.apply(acc[1], r3[1]);;
+        this.r4[1] = f.apply(acc[1], r3[1]) / mass;
         this.r5 = new double[pos.length];
-        this.r5[1] = f.apply(r3[1], r4[1]);;
+        this.r5[1] = f.apply(r3[1], r4[1]) / mass;
     }
 
     @Override
