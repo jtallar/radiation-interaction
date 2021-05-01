@@ -68,7 +68,9 @@ public class DampedOscillation {
             return;
         }
 
-        System.out.printf("Running %s with dt_sim=%.3E and dt_print=%.3E. \nOutput to %s\n\n", algorithmType.name(), deltaTimeSim, deltaTimePrint, dynamicFilename);
+        System.out.printf("Running %s with dt_sim=%.3E and dt_print=%.3E. \nOutput to ", algorithmType.name(), deltaTimeSim, deltaTimePrint);
+        System.err.printf("%s", dynamicFilename);
+        System.out.printf("\n\n");
 
         // Measure simulation time
         long startTime = System.currentTimeMillis();
