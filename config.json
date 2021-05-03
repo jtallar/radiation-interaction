@@ -24,7 +24,7 @@
         "seed": 1234
     },
 
-    "delta_t_sim": 0.005,
+    "delta_t_sim": 1e-15,
     "delta_t_print": 0.01,
 
     "plot": true

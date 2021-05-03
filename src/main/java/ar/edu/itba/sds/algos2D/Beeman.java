@@ -19,13 +19,13 @@ public class Beeman extends StepAlgorithm {
         if (!hasNext()) throw new IndexOutOfBoundsException("No more time steps!");
 
         // Calculate x(t+dt)
-        final Vector2D nextPos = sub(sum(sum(pos.peek(), scalar(vel.peek(), deltaT)), scalar(inv(acc.peek()),2.0 / 3.0 * deltaTSq)), scalar(inv(acc.peekPeek()), 1.0 / 6.0 * deltaTSq));
+        final Vector2D nextPos = sub(sum(sum(pos.peek(), scalar(vel.peek(), deltaT)), scalar(acc.peek(),2.0 / 3.0 * deltaTSq)), scalar(acc.peekPeek(), 1.0 / 6.0 * deltaTSq));
 
         // Calculate a(t+dt) using x(t+dt)
         final Vector2D nextAcc = scalar(f.apply(nextPos, staticParticles), 1 / mass);
 
         // Calculate v(t+dt)
-        final Vector2D nextVel = sub(sum(sum(vel.peek(), scalar(inv(nextAcc), 1.0 / 3.0 * deltaT)), scalar(inv(acc.peek()), 5.0 / 6.0 * deltaT)), scalar(inv(acc.peekPeek()), 1.0 / 6.0 * deltaT));
+        final Vector2D nextVel = sub(sum(sum(vel.peek(), scalar(nextAcc, 1.0 / 3.0 * deltaT)), scalar(acc.peek(), 5.0 / 6.0 * deltaT)), scalar(acc.peekPeek(), 1.0 / 6.0 * deltaT));
 
         // Update lastTime and lastIndex
         lastTime += deltaT;

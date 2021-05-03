@@ -102,6 +102,7 @@ public class RadiationInteraction {
                 printStep(curStep);
             }
         }
+        System.out.println("Done");
 
         // Print simulation time
         long endTime = System.currentTimeMillis();
