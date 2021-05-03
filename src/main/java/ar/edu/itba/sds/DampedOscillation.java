@@ -1,7 +1,7 @@
 package ar.edu.itba.sds;
 
-import ar.edu.itba.sds.algos.AlgorithmType;
 import ar.edu.itba.sds.algos.StepAlgorithm;
+import ar.edu.itba.sds.objects.AlgorithmType;
 import ar.edu.itba.sds.objects.Step;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -70,14 +70,14 @@ public class DampedOscillation {
 
         System.out.printf("Running %s with dt_sim=%.3E and dt_print=%.3E. \nOutput to ", algorithmType.name(), deltaTimeSim, deltaTimePrint);
         System.err.printf("%s", dynamicFilename);
-        System.out.printf("\n\n");
+        System.out.print("\n\n");
 
         // Measure simulation time
         long startTime = System.currentTimeMillis();
 
         // Simulation
         final StepAlgorithm algorithm = StepAlgorithm.algorithmBuilder(algorithmType, f, deltaTimeSim, timeFinal, r0, v0, mass);
-        Step curStep = algorithm.getLastStep();
+        Step<Double> curStep = algorithm.getLastStep();
         printStep(curStep);
         while (algorithm.hasNext()) {
             curStep = algorithm.next();

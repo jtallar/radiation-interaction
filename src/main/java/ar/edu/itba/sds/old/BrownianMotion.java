@@ -1,7 +1,6 @@
-package ar.edu.itba.sds;
+package ar.edu.itba.sds.old;
 
-import ar.edu.itba.sds.objects.Event;
-import ar.edu.itba.sds.objects.Particle;
+import ar.edu.itba.sds.ArgumentException;
 import org.json.JSONObject;
 import org.json.JSONException;
 
@@ -61,14 +60,14 @@ public class BrownianMotion {
         }
 
         // Parse dynamic file
-        List<Particle> particles;
-        Particle bigParticle;
+        List<ParticleUnused> particleUnuseds;
+        ParticleUnused bigParticleUnused;
         try(BufferedReader reader = new BufferedReader(new FileReader(dynamicFilename))) {
             // Set initial time
             time = Double.parseDouble(reader.readLine());
             // Create particle list
-            particles = createParticleList(reader, particleRadius, particleMass);
-            bigParticle = particles.get(bigParticleIndex);
+            particleUnuseds = createParticleList(reader, particleRadius, particleMass);
+            bigParticleUnused = particleUnuseds.get(bigParticleIndex);
         } catch (FileNotFoundException e) {
             System.err.println("Dynamic file not found");
             System.exit(ERROR_STATUS);
@@ -87,30 +86,30 @@ public class BrownianMotion {
         startTime = System.currentTimeMillis();
 
         // Simulation
-        final Queue<Event> eventQueue = createQueueFromList(particles);
+        final Queue<Event> eventQueue = createQueueFromList(particleUnuseds);
         int eventsTriggered = 0;
         while (!eventQueue.isEmpty() && eventsTriggered < maxEvents) {
             final Event event = eventQueue.poll();
             if (event.isValid()) {
                 final double eventTime = event.getTime();
                 // Advance all particles delta t
-                particles.forEach(p -> p.advanceTime(eventTime - time));
+                particleUnuseds.forEach(p -> p.advanceTime(eventTime - time));
                 time = eventTime;
                 // Write particle state to dynamic file
                 try {
-                    writeParticleState(particles);
+                    writeParticleState(particleUnuseds);
                 } catch (IOException e) {
                     System.err.println("Error writing dynamic file");
                     System.exit(ERROR_STATUS);
                     return;
                 }
                 // Check if big particle hit a wall
-                if (bigParticleToWall(event, bigParticle)) break;
+                if (bigParticleToWall(event, bigParticleUnused)) break;
                 // Update colliding particles velocities
                 event.performEvent();
                 // Determine future collisions
-                addFutureCollisions(eventQueue, event.getParticle1(), particles); // If p1 collides with p2, it will be added twice
-                addFutureCollisions(eventQueue, event.getParticle2(), particles); // Second time will be invalid when triggered
+                addFutureCollisions(eventQueue, event.getParticle1(), particleUnuseds); // If p1 collides with p2, it will be added twice
+                addFutureCollisions(eventQueue, event.getParticle2(), particleUnuseds); // Second time will be invalid when triggered
                 // Add one to counter
                 eventsTriggered++;
             }
@@ -135,32 +134,32 @@ public class BrownianMotion {
             System.out.println("Big particle reached border, exiting...");
     }
 
-    private static boolean bigParticleToWall(Event event, Particle bigParticle) {
-        return event.isWallType() && event.getParticle1().equals(bigParticle);
+    private static boolean bigParticleToWall(Event event, ParticleUnused bigParticleUnused) {
+        return event.isWallType() && event.getParticle1().equals(bigParticleUnused);
     }
 
-    private static void addFutureCollisions(Queue<Event> queue, Particle particle, List<Particle> particles) {
-        if (particle == null) return;
+    private static void addFutureCollisions(Queue<Event> queue, ParticleUnused particleUnused, List<ParticleUnused> particleUnuseds) {
+        if (particleUnused == null) return;
 
         // Create vertical wall collision event
-        Double tc = particle.collidesX(0, L);
-        if (tc != null) queue.add(new Event(time + tc, particle, true));
+        Double tc = particleUnused.collidesX(0, L);
+        if (tc != null) queue.add(new Event(time + tc, particleUnused, true));
 
         // Create horizontal wall collision event
-        tc = particle.collidesY(0, L);
-        if (tc != null) queue.add(new Event(time + tc, particle, false));
+        tc = particleUnused.collidesY(0, L);
+        if (tc != null) queue.add(new Event(time + tc, particleUnused, false));
 
-        for (Particle other : particles) {
-            tc = particle.collides(other);
-            if (tc != null) queue.add(new Event(time + tc, particle, other));
+        for (ParticleUnused other : particleUnuseds) {
+            tc = particleUnused.collides(other);
+            if (tc != null) queue.add(new Event(time + tc, particleUnused, other));
         }
     }
 
-    private static void writeParticleState(List<Particle> particles)
+    private static void writeParticleState(List<ParticleUnused> particleUnuseds)
             throws IOException {
         StringBuilder sb = new StringBuilder();
         sb.append(String.format("\n*\n%.7E", time));
-        particles.forEach(p -> sb.append(String.format("\n%.7E %.7E %.7E %.7E", p.getX(), p.getY(), p.getVx(), p.getVy())));
+        particleUnuseds.forEach(p -> sb.append(String.format("\n%.7E %.7E %.7E %.7E", p.getX(), p.getY(), p.getVx(), p.getVy())));
 
         appendToFile(dynamicFilename, sb.toString());
     }
@@ -171,11 +170,11 @@ public class BrownianMotion {
         }
     }
 
-    private static Queue<Event> createQueueFromList(List<Particle> particles) {
+    private static Queue<Event> createQueueFromList(List<ParticleUnused> particleUnuseds) {
         final Queue<Event> eventQueue = new PriorityQueue<>();
         Double tc;
-        for (int i = 0; i < particles.size(); i++) {
-            Particle cur = particles.get(i);
+        for (int i = 0; i < particleUnuseds.size(); i++) {
+            ParticleUnused cur = particleUnuseds.get(i);
             // Create vertical wall collision event
             tc = cur.collidesX(0, L);
             if (tc != null) eventQueue.add(new Event(time + tc, cur, true));
@@ -185,8 +184,8 @@ public class BrownianMotion {
             if (tc != null) eventQueue.add(new Event(time + tc, cur, false));
 
             // Create two particle collision events
-            for (int j = i + 1; j < particles.size(); j++) {
-                Particle other = particles.get(j);
+            for (int j = i + 1; j < particleUnuseds.size(); j++) {
+                ParticleUnused other = particleUnuseds.get(j);
                 tc = cur.collides(other);
                 if (tc != null) eventQueue.add(new Event(time + tc, cur, other));
             }
@@ -194,11 +193,11 @@ public class BrownianMotion {
         return eventQueue;
     }
 
-    private static List<Particle> createParticleList(BufferedReader reader, double[] radiusArray, double[] massArray)
+    private static List<ParticleUnused> createParticleList(BufferedReader reader, double[] radiusArray, double[] massArray)
             throws IOException {
         if (radiusArray.length != massArray.length) throw new IllegalArgumentException("Radius and mass array must be same sized!");
 
-        List<Particle> particles = new ArrayList<>();
+        List<ParticleUnused> particleUnuseds = new ArrayList<>();
 
         for (int i = 0; i < radiusArray.length; i++) {
             String line = reader.readLine();
@@ -209,13 +208,13 @@ public class BrownianMotion {
             double x = Double.parseDouble(values[0]), y = Double.parseDouble(values[1]);
             double vx = Double.parseDouble(values[2]), vy = Double.parseDouble(values[3]);
 
-            particles.add(new Particle(i, x, y, vx, vy, radiusArray[i], massArray[i]));
+            particleUnuseds.add(new ParticleUnused(i, x, y, vx, vy, radiusArray[i], massArray[i]));
         }
 
         // Check that there are no lines remaining
         if (reader.readLine() != null) throw new IOException();
 
-        return particles;
+        return particleUnuseds;
     }
 
     /**

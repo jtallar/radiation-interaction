@@ -24,7 +24,7 @@ public class Gear extends StepAlgorithm {
     }
 
     @Override
-    public Step next() {
+    public Step<Double> next() {
         if (!hasNext()) throw new IndexOutOfBoundsException("No more timesteps!");
 
         double [][] r = {pos, vel, acc, r3, r4, r5};
@@ -46,7 +46,7 @@ public class Gear extends StepAlgorithm {
         lastTime += deltaT;
         lastIndex++;
 
-        return new Step(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
+        return new Step<>(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
     }
 
     private double factor(double deltaT, int k){
