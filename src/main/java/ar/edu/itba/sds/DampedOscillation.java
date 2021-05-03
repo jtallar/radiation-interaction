@@ -93,7 +93,7 @@ public class DampedOscillation {
 
     private static void printStep(Step<Double> step) {
         try {
-            appendToFile(dynamicFilename, String.format("%.30E\n%.30E %.30E\n*\n", step.getTime(), step.getPos(), step.getAcc()));
+            appendToFile(dynamicFilename, String.format("%.30E\n%.30E %.30E\n*\n", step.getTime(), step.getPos(), step.getVel()));
         } catch (IOException e) {
             System.err.println("Error writing dynamic file");
             System.exit(ERROR_STATUS);
