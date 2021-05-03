@@ -53,7 +53,6 @@ public abstract class StepAlgorithm implements Iterator<Step<Double>> {
         this.lastIndex = 1;
     }
 
-    // TODO: Check, pero creo que va bien
     private Step<Double> eulerPrecedingStep(double t, double r, double v, double a) {
         double vPrev = v - deltaT * a;
         double rPrev = r - deltaT * vPrev + deltaTSq * a / 2.0;

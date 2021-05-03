@@ -111,7 +111,7 @@ public class RadiationInteraction {
 
     private static void printStep(Step<Vector2D> step) {
         try {
-            appendToFile(dynamicFilename, String.format("%.7E\n%.7E %.7E %.7E %.7E\n*\n",
+            appendToFile(dynamicFilename, String.format("%.30E\n%.30E %.30E %.30E %.30E\n*\n",
                     step.getTime(), step.getPos().getX(), step.getPos().getY(), step.getVel().getX(), step.getVel().getY()));
         } catch (IOException e) {
             System.err.println("Error writing dynamic file");
@@ -193,7 +193,7 @@ public class RadiationInteraction {
 
         // If dt or algo were set by param, rename dynamic file with algorithm and dt
         if (algorithmName != null || deltaTimeProp != null) {
-            dynamicFilename = String.format("%s-%.2E.txt", algorithmType.name(), deltaTimeSim);
+            dynamicFilename = String.format("%s-%.10E.txt", algorithmType.name(), deltaTimeSim);
         }
     }
 

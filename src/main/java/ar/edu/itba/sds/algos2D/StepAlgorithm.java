@@ -79,9 +79,9 @@ public abstract class StepAlgorithm implements Iterator<Step<Vector2D>> {
     // private auxiliary functions
 
     private Step<Vector2D> eulerPrecedingStep(double t, Vector2D r, Vector2D v, Vector2D a) {
-        final Vector2D prevPos = sum(sub(r, scalar(v, deltaT)), scalar(a, deltaTSq / (2.0 * mass)));
-        final Vector2D prevVel = sub(v, scalar(inv(a), deltaT / mass));
-        final Vector2D prevAcc = scalar(f.apply(prevPos, staticParticles), 1 / mass);
+        final Vector2D prevVel = sub(v, scalar(a, deltaT));
+        final Vector2D prevPos = sum(sub(r, scalar(prevVel, deltaT)), scalar(a, deltaTSq / 2.0));
+        final Vector2D prevAcc = scalar(f.apply(prevPos, staticParticles), 1.0 / mass);
         return new Step<>(t - deltaT, prevPos, prevVel, prevAcc);
     }
 
