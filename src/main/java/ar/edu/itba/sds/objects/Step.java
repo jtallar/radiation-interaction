@@ -1,12 +1,12 @@
 package ar.edu.itba.sds.objects;
 
-public class Step {
+public class Step <T> {
     private final double time;
-    private final double pos;
-    private final double vel;
-    private final double acc;
+    private final T pos;
+    private final T vel;
+    private final T acc;
 
-    public Step(double time, double pos, double vel, double acc) {
+    public Step(double time, T pos, T vel, T acc) {
         this.time = time;
         this.pos = pos;
         this.vel = vel;
@@ -17,15 +17,15 @@ public class Step {
         return time;
     }
 
-    public double getPos() {
+    public T getPos() {
         return pos;
     }
 
-    public double getVel() {
+    public T getVel() {
         return vel;
     }
 
-    public double getAcc() {
+    public T getAcc() {
         return acc;
     }
 }

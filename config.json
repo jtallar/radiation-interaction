@@ -12,7 +12,19 @@
         "A": 1
     },
 
-    "delta_t_sim": 0.005,
+    "rad": {
+        "algo": "Beeman",
+        "mass": 1e-27,
+        "k": 1e10,
+        "N": 16,
+        "D": 1e-8,
+        "Q": 1e-19,
+        "v0": 10e3,
+        "use_seed": false,
+        "seed": 1234
+    },
+
+    "delta_t_sim": 1e-15,
     "delta_t_print": 0.01,
 
     "plot": true

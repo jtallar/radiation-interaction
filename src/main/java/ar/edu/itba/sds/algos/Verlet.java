@@ -11,7 +11,7 @@ public class Verlet extends StepAlgorithm {
     }
 
     @Override
-    public Step next() {
+    public Step<Double> next() {
         if (!hasNext()) throw new IndexOutOfBoundsException("No more timesteps!");
 
         // Calculate x(t+dt)
@@ -27,6 +27,6 @@ public class Verlet extends StepAlgorithm {
         lastTime += deltaT;
         lastIndex++;
 
-        return new Step(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
+        return new Step<>(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
     }
 }

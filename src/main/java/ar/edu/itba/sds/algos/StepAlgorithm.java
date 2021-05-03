@@ -1,11 +1,12 @@
 package ar.edu.itba.sds.algos;
 
+import ar.edu.itba.sds.objects.AlgorithmType;
 import ar.edu.itba.sds.objects.Step;
 
 import java.util.Iterator;
 import java.util.function.BiFunction;
 
-public abstract class StepAlgorithm implements Iterator<Step> {
+public abstract class StepAlgorithm implements Iterator<Step<Double>> {
     protected final double[] pos;
     protected final double[] vel;
     protected final double[] acc;
@@ -44,7 +45,7 @@ public abstract class StepAlgorithm implements Iterator<Step> {
         this.acc = new double[size];
         this.acc[1] = f.apply(r0, v0) / this.mass;
 
-        final Step prevStep = eulerPrecedingStep(this.lastTime, this.pos[1], this.vel[1], this.acc[1]);
+        final Step<Double> prevStep = eulerPrecedingStep(this.lastTime, this.pos[1], this.vel[1], this.acc[1]);
         this.pos[0] = prevStep.getPos();
         this.vel[0] = prevStep.getVel();
         this.acc[0] = prevStep.getAcc();
@@ -52,17 +53,16 @@ public abstract class StepAlgorithm implements Iterator<Step> {
         this.lastIndex = 1;
     }
 
-    // TODO: Check, pero creo que va bien
-    private Step eulerPrecedingStep(double t, double r, double v, double a) {
+    private Step<Double> eulerPrecedingStep(double t, double r, double v, double a) {
         double vPrev = v - deltaT * a;
         double rPrev = r - deltaT * vPrev + deltaTSq * a / 2.0;
         double aPrev = f.apply(rPrev, vPrev) / mass;
 
-        return new Step(t - deltaT, rPrev, vPrev, aPrev);
+        return new Step<>(t - deltaT, rPrev, vPrev, aPrev);
     }
 
-    public Step getLastStep() {
-        return new Step(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
+    public Step<Double> getLastStep() {
+        return new Step<>(lastTime, pos[lastIndex], vel[lastIndex], acc[lastIndex]);
     }
 
     @Override

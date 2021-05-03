@@ -1,6 +1,6 @@
-package ar.edu.itba.sds.objects;
+package ar.edu.itba.sds.old;
 
-public class Particle {
+public class ParticleUnused {
     private final int id;
     private double x;
     private double y;
@@ -20,7 +20,7 @@ public class Particle {
      * @param r particle radius
      * @param m particle mass
      */
-    public Particle(int id, double x, double y, double vx, double vy, double r, double m) {
+    public ParticleUnused(int id, double x, double y, double vx, double vy, double r, double m) {
         this.id = id;
         this.x = x;
         this.y = y;
@@ -31,11 +31,11 @@ public class Particle {
         this.collisionCount = 0;
     }
 
-    public double centerDistance(Particle other) {
+    public double centerDistance(ParticleUnused other) {
         return Math.sqrt(Math.pow(x - other.x, 2) + Math.pow(y - other.y, 2));
     }
 
-    public double borderDistance(Particle other) {
+    public double borderDistance(ParticleUnused other) {
         return centerDistance(other) - r - other.r;
     }
 
@@ -79,7 +79,7 @@ public class Particle {
      * @return duration of time until particle collides with other
      *         returns null if they never collide
      */
-    public Double collides(Particle other) {
+    public Double collides(ParticleUnused other) {
         // Xi = self, Xj = other
         double deltaX = other.x - this.x, deltaY = other.y - this.y;
         double deltaVX = other.vx - this.vx, deltaVY = other.vy - this.vy;
@@ -117,7 +117,7 @@ public class Particle {
      * Update particle and other simulating them bouncing off together
      * @param other particle that collides with self
      */
-    public void bounce(Particle other) {
+    public void bounce(ParticleUnused other) {
         // Xi = self, Xj = other
         double deltaX = other.x - this.x, deltaY = other.y - this.y;
         double deltaVX = other.vx - this.vx, deltaVY = other.vy - this.vy;
@@ -157,9 +157,9 @@ public class Particle {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Particle)) return false;
-        Particle particle = (Particle) o;
-        return id == particle.id;
+        if (!(o instanceof ParticleUnused)) return false;
+        ParticleUnused particleUnused = (ParticleUnused) o;
+        return id == particleUnused.id;
     }
 
     @Override

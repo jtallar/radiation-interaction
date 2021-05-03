@@ -1,4 +1,4 @@
-package ar.edu.itba.sds.algos;
+package ar.edu.itba.sds.objects;
 
 public enum AlgorithmType {
     BEEMAN("Beeman"),
