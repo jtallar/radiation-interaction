@@ -135,28 +135,28 @@ public class RadiationInteraction {
             deltaTimeSim = getConfigDouble(config, DELTA_T_SIM_CONFIG_KEY, v -> v > 0);
             deltaTimePrint = getConfigDouble(config, DELTA_T_PRINT_CONFIG_KEY, v -> v > 0 && doubleMultiple(v, deltaTimeSim));
 
-            final JSONObject oscObject = config.getJSONObject(RAD_OBJECT_CONFIG_KEY);
-            algorithmType = AlgorithmType.of(oscObject.getString(RAD_ALGO_CONFIG_KEY));
+            final JSONObject radObject = config.getJSONObject(RAD_OBJECT_CONFIG_KEY);
+            algorithmType = AlgorithmType.of(radObject.getString(RAD_ALGO_CONFIG_KEY));
             if (algorithmType == null) throw new ArgumentException("Invalid algorithm name");
 
             // get double params
-            mass = getConfigDouble(oscObject, RAD_MASS_CONFIG_KEY, v -> v > 0);
-            k = getConfigDouble(oscObject, RAD_K_CONFIG_KEY, v -> v > 0);
-            d = getConfigDouble(oscObject, RAD_D_CONFIG_KEY, v -> v > 0);
-            q = getConfigDouble(oscObject, RAD_Q_CONFIG_KEY, v -> v > 0);
+            mass = getConfigDouble(radObject, RAD_MASS_CONFIG_KEY, v -> v > 0);
+            k = getConfigDouble(radObject, RAD_K_CONFIG_KEY, v -> v > 0);
+            d = getConfigDouble(radObject, RAD_D_CONFIG_KEY, v -> v > 0);
+            q = getConfigDouble(radObject, RAD_Q_CONFIG_KEY, v -> v > 0);
 
             // get int params
-            n = getConfigInt(oscObject, RAD_N_CONFIG_KEY, v -> v > 0);
-            v0 = getConfigInt(oscObject, RAD_V0_CONFIG_KEY, v -> v > 0);
-            final boolean useSeed = config.getBoolean(RAD_USE_SEED_CONFIG_KEY);
-            seed = (useSeed)? getConfigInt(oscObject, RAD_SEED_CONFIG_KEY, v -> v > 0) : System.nanoTime();
+            n = getConfigInt(radObject, RAD_N_CONFIG_KEY, v -> v > 0);
+            v0 = getConfigInt(radObject, RAD_V0_CONFIG_KEY, v -> v > 0);
+            final boolean useSeed = radObject.getBoolean(RAD_USE_SEED_CONFIG_KEY);
+            seed = (useSeed)? getConfigInt(radObject, RAD_SEED_CONFIG_KEY, v -> v > 0) : System.nanoTime();
 
         } catch (FileNotFoundException e) {
             throw new ArgumentException(String.format("Config file %s not found", configFilename));
         } catch (IOException e) {
             throw new ArgumentException("Error parsing config file");
         } catch (JSONException e) {
-            throw new ArgumentException("Missing configurations in config file. Must define \"static_file\", \"dynamic_file\" and \"osc\".");
+            throw new ArgumentException(e.getMessage());
         }
 
         // Check properties to override parameters for faster simulation repetition
