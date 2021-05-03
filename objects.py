@@ -58,7 +58,7 @@ class Particle1D(object):
 
 class Particle(object):
 
-    def __init__(self, id, x=0, y=0, vx=0, vy=0, r=0, m=0):
+    def __init__(self, id, x=0, y=0, vx=0, vy=0, r=0, m=0, q=0):
         """Returns a Particle object with the given coordinates
 
         Parameters
@@ -77,6 +77,8 @@ class Particle(object):
             Particle radius
         m : float
             Particle mass
+        q : float
+            Particle charge
         """
 
         self.id = id
@@ -86,6 +88,7 @@ class Particle(object):
         self.vy = vy
         self.r = r
         self.m = m
+        self.q = q
 
     def center_distance(self, other):
         return math.sqrt(math.pow(self.x - other.x, 2) + math.pow(self.y - other.y, 2))
