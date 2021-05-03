@@ -68,7 +68,7 @@ for linenum, line in enumerate(dynamic_file):
         restart = True
         line = ''
         for p in static_particles:
-            line += get_ovito_line(radius, p.x, p.y, p.id, p.q > 0)
+            line += get_ovito_line(radius / 3, p.x, p.y, p.id, p.q > 0)
         ovito_file.write(line)
         continue
 
