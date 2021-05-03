@@ -1,6 +1,7 @@
 {
     "static_file": "static.txt",
     "dynamic_file": "dynamic.txt",
+    "simulation_file": "simu.xyz",
 
     "osc": {
         "algo": "Beeman",
@@ -25,7 +26,7 @@
     },
 
     "delta_t_sim": 1e-15,
-    "delta_t_print": 0.01,
+    "delta_t_print": 1e-15,
 
     "plot": true
 }
