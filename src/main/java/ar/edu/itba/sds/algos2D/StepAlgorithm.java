@@ -58,18 +58,17 @@ public abstract class StepAlgorithm implements Iterator<Step<Vector2D>> {
         pos.push(prevStep.getPos());
         pos.push(pos0);
         this.vel = new CustomStack<>();
-        pos.push(prevStep.getVel());
-        pos.push(vel0);
+        vel.push(prevStep.getVel());
+        vel.push(vel0);
         this.acc = new CustomStack<>();
-        pos.push(prevStep.getAcc());
-        pos.push(acc0);
+        acc.push(prevStep.getAcc());
+        acc.push(acc0);
     }
 
     public Step<Vector2D> getLastStep() {
         return new Step<>(lastTime, pos.peek(), vel.peek(), acc.peek());
     }
 
-    // TODO check if min X is ok
     @Override
     public boolean hasNext() {
         if (lastTime < deltaT) return true;
