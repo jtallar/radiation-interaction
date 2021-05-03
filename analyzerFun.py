@@ -1,9 +1,10 @@
 import math
+import statistics as sts
 import utils
 import objects as obj
 
 def exact_solution(t, mass, k, gamma, amp):
-    return amp * math.exp(-t * gamma / (2 * mass)) * math.cos(t * math.sqrt(k / mass - gamma * gamma / (4 * mass * mass)))
+    return amp * math.exp(-(gamma / (2 * mass)) * t) * math.cos(math.sqrt(k / mass - gamma * gamma / (4 * mass * mass)) * t)
 
 def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta_t):
     dynamic_file = open(dynamic_filename, "r")
@@ -15,7 +16,7 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
     time_vec = []
     exact_sol = []
     algo_sol = []
-    ecm_sum = 0
+    ecms = []
 
     for linenum, line in enumerate(dynamic_file):
         if restart:
@@ -36,7 +37,7 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
         exact_sol.append(exact_solution(time, mass, k, gamma, amp))
 
         # Save Error cuadratico sum
-        ecm_sum += (algo_sol[-1] - exact_sol[-1]) ** 2
+        ecms.append((algo_sol[-1] - exact_sol[-1]) ** 2)
 
         p_id += 1
 
@@ -44,8 +45,9 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
     dynamic_file.close()
 
     # Calculate ECM
-    ecm = ecm_sum / len(exact_sol)
-    print(f'ECM for {algo} with dt {delta_t} = {ecm:.7E}\n')
+    ecm = sts.mean(ecms)
+    ecm_dev = sts.stdev(ecms)
+    print(f'ECM for {algo} with dt {delta_t:.10E} = {ecm:.10E}, dev = {ecm_dev:.10E}\n')
 
     # Plot values
     if plot_boolean:
