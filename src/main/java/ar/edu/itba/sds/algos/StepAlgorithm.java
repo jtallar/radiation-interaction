@@ -55,8 +55,8 @@ public abstract class StepAlgorithm implements Iterator<Step<Double>> {
 
     // TODO: Check, pero creo que va bien
     private Step<Double> eulerPrecedingStep(double t, double r, double v, double a) {
-        double rPrev = r - deltaT * v + deltaTSq * a / (2.0 * mass);
-        double vPrev = v - deltaT / mass * a;
+        double vPrev = v - deltaT * a;
+        double rPrev = r - deltaT * vPrev + deltaTSq * a / 2.0;
         double aPrev = f.apply(rPrev, vPrev) / mass;
 
         return new Step<>(t - deltaT, rPrev, vPrev, aPrev);
