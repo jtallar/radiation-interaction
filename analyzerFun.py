@@ -61,7 +61,7 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
             [exact_sol, algo_sol],
             'posición (m)',
             ['Analítica', algo],
-            sci=False
+            sci_y=False
         )
 
         # Hold execution

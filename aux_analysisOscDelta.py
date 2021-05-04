@@ -26,7 +26,7 @@ ecms_gear_5 = [5.5722832263E-23, 1.4449721781E-23, 1.2396949503E-23, 5.610333529
 # Initialize plotting
 utils.init_plotter()
 
-utils.plot_multiple_values([dts, dts, dts], 'dt (s)', [ecms_beeman, ecms_verlet, ecms_gear_5], 'ecm (m^2)', ['beeman', 'verlet', 'gear'], log=True, legend_loc='lower right')
+utils.plot_multiple_values([dts, dts, dts], 'dt (s)', [ecms_beeman, ecms_verlet, ecms_gear_5], 'ecm (m^2)', ['beeman', 'verlet', 'gear'], sci_x=True, log_x=True, log_y=True, legend_loc='lower right')
 
 # Hold execution
 utils.hold_execution()

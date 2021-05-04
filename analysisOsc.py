@@ -66,7 +66,7 @@ else:
             y_superlist,
             'posición (m)',
             legend_list,
-            sci=False
+            sci_y=False
         )
 
         # Hold execution

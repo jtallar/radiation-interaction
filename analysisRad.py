@@ -88,7 +88,7 @@ else:
         utils.plot_multiple_values(
             err_x_superlist, 'tiempo (s)',
             err_y_superlist, 'diferencia de ET(t) con ET(0) (J)',
-            err_legend_list, sci=True, log=True, precision=0
+            err_legend_list, sci_x=True, log_y=True, precision=0
         )
 
         # Hold execution
