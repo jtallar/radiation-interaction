@@ -54,7 +54,14 @@ else:
     err_y_superlist = []
     err_legend_list = []
 
-    ending_dict = {}
+    ending_dict = {
+        obj.EndingReason.NotEnded: 0,
+        obj.EndingReason.TopWall: 0,
+        obj.EndingReason.RightWall: 0,
+        obj.EndingReason.BottomWall: 0,
+        obj.EndingReason.LeftWall: 0,
+        obj.EndingReason.Collision: 0
+    }
     err_sum_list = []
     l_tot_list = []
     for filename in dynamic_files:
@@ -64,8 +71,6 @@ else:
         # Save specific value vars
         err_sum_list.append(metric.energy_diff_sum)
         l_tot_list.append(metric.trajectory_total)
-        if metric.ending_motive not in ending_dict:
-            ending_dict[metric.ending_motive] = 0
         ending_dict[metric.ending_motive] += 1
         # Save plotting value vars
         err_x_superlist.append(metric.time_vec[1:])
