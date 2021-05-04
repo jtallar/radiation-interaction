@@ -4,6 +4,9 @@ import json
 import utils
 import analyzerFun as anl
 
+import statistics as sts
+import objects as obj
+
 # Read out filename param if provided
 dynamic_files = None
 if len(sys.argv) >= 2:
@@ -43,33 +46,24 @@ if dynamic_files is None:
     # python analysisRad.py
     anl.analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t)
 else:
-    # Perform analysis on mutiple dt/v0
-    # python analysisRad.py beeman.txt verlet.txt gpc5.txt
-    x_superlist = []
-    y_superlist = []
-    legend_list = []
+    # Perform multiple iterations of same params (dt & v0)
+    #   python analysisRad.py BEEMAN_1.00000E-15_10000_1.txt BEEMAN_1.00000E-15_10000_2.txt
+    ending_dict = {}
+    err_sum_list = []
+    l_tot_list = []
     for filename in dynamic_files:
-        # Expected filename format: ALGO-dt.txt
-        name_data = filename[:-4].split('-', 1) # Take filename without .txt extension
-        # TODO: Take params from filename
-        metric = anl.analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t)
-        x_superlist.append(metric.time_vec)
-        y_superlist.append(metric.algo_sol)
-        legend_list.append(metric.algo)
+        # Expected filename format: ALGO_dt_v0.txt
+        name_data = filename[:-4].split('_') # Take filename without .txt extension
+        metric = anl.analyze_rad(filename, name_data[0].lower(), mass, k, N, D, Q, float(name_data[2]), False, float(name_data[1]))
+        err_sum_list.append(metric.energy_diff_sum)
+        l_tot_list.append(metric.trajectory_total)
+        if metric.ending_motive not in ending_dict:
+            ending_dict[metric.ending_motive] = 0
+        ending_dict[metric.ending_motive] += 1
+    
+    err_sum = obj.FullValue(sts.mean(err_sum_list), sts.stdev(err_sum_list))
+    l_tot = obj.FullValue(sts.mean(l_tot_list), sts.stdev(l_tot_list))
 
-    if plot_boolean:
-        # Initialize plotting
-        utils.init_plotter()
-
-        # Plot real trajectory with estimated one
-        utils.plot_multiple_values(
-            x_superlist,
-            'tiempo (s)',
-            y_superlist,
-            'posición (m)',
-            legend_list,
-            sci=False
-        )
-
-        # Hold execution
-        utils.hold_execution()    
+    print(f'Error sum = {err_sum}\n'
+          f'L total = {l_tot}\n'
+          f'Ending dictionary: {ending_dict}\n')
