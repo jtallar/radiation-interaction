@@ -68,3 +68,73 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
         utils.hold_execution()
     
     return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)
+
+def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t):
+    dynamic_file = open(dynamic_filename, "r")
+
+    # Build static particle list
+    static_particles = []
+    for i in range(N):
+        for j in range(N):
+            static_particles.append(obj.Particle(
+                    i * N + j, 
+                    (i + 1) * D,
+                    j * D,
+                    q=Q if (i + j) % 2 == 0 else -Q
+                ))
+
+    # Initial values
+    restart = True
+    p_id = 0
+    
+    time_vec = []
+    algo_sol = []
+    ecms = []
+
+    for linenum, line in enumerate(dynamic_file):
+        if restart:
+            time = float(line.rstrip())
+            # Reset variables
+            restart = False
+            p_id = 0
+            continue
+        if "*" == line.rstrip():
+            restart = True
+            continue
+
+        line_vec = line.rstrip().split(' ') # x y vx vy
+        # (id, x=0, y=0, vx=0, vy=0, r=0, m=0, q=0)
+        part = obj.Particle(
+            p_id, float(line_vec[0]), float(line_vec[1]), 
+            float(line_vec[2]), float(line_vec[3]), 0, mass, Q)
+        time_vec.append(time)
+        algo_sol.append(part.x)
+        p_id += 1
+
+    # Close files
+    dynamic_file.close()
+
+    # Calculate ECM
+    ecm = sts.mean(ecms)
+    ecm_dev = sts.stdev(ecms)
+    print(f'ECM for {algo} with dt {delta_t:.10E} = {ecm:.10E}, dev = {ecm_dev:.10E}\n')
+
+    # Plot values
+    if plot_boolean:
+        # Initialize plotting
+        utils.init_plotter()
+
+        # Plot real trajectory with estimated one
+        utils.plot_multiple_values(
+            [time_vec, time_vec],
+            'tiempo (s)',
+            [exact_sol, algo_sol],
+            'posición (m)',
+            ['Analítica', algo],
+            sci=False
+        )
+
+        # Hold execution
+        utils.hold_execution()
+    
+    return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)
