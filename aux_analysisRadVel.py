@@ -4,8 +4,8 @@ import utils
 # 2. Run multiple simulations with different v0s
 #   ./target/tp4-simu-1.0/radiation-interaction.sh -Ddt=1.00000E-14 -Dv0=10000 -DdynamicSuf=_1 --> BEEMAN_1.00000E-14_10000_1.txt
 #   python analysisRad.py BEEMAN_1.00000E-14_10000_1.txt BEEMAN_1.00000E-14_10000_2.txt BEEMAN_1.00000E-14_10000_3.txt
-# 3. Replace delta_t values and ecms below with obtained values
-# 4. Run python aux_analysisOscDelta.py
+# 3. Replace v0s values and other values below with obtained values
+# 4. Run python aux_analysisRadVel.py
 
 # Values obtained by runnning
 #   ./multipleDt.sh 0.00001 0.00001 0.00010;
