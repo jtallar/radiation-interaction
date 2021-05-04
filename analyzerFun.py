@@ -117,7 +117,6 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
         # Save energy values
         tot_energy = part.get_kinetic_energy() + part.get_potential_energy(static_particles, k)
 
-        # TODO: Check que tome bien el = 0
         # Save interdistance value if time != 0
         # Save tot_energy dif if time != 0
         if time != 0:
@@ -165,7 +164,4 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
 
         # Hold execution
         utils.hold_execution()
-    
-    # TODO: Do this
-    return 0
-    # return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)
+    return obj.AnalysisRad(algo, delta_t, v0, init_energy, trajectory_sumdist, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist)

@@ -43,7 +43,7 @@ if dynamic_files is None:
     # python analysisRad.py
     anl.analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t)
 else:
-    # 
+    # Perform analysis on mutiple dt/v0
     # python analysisRad.py beeman.txt verlet.txt gpc5.txt
     x_superlist = []
     y_superlist = []

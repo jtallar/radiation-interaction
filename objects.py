@@ -200,6 +200,17 @@ class AnalysisOsc(object):
         self.algo_sol = algo_sol
         self.ecm = ecm
 
+class AnalysisRad(object):
+    def __init__(self, algo, dt, v0, init_energy, trajectory_total, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist):
+        self.algo = algo
+        self.dt = dt
+        self.v0 = v0
+        self.init_energy = init_energy
+        self.trajectory_total = trajectory_total
+        self.ending_motive = ending_motive
+        self.time_vec = time_vec
+        self.energy_diff_vec = energy_diff_vec
+        self.trajectory_sum_interdist = trajectory_sum_interdist
 
 ###################### OLD ######################
 class IdDistance(object):
