@@ -23,6 +23,7 @@ public class RadiationInteraction {
 
     private static final String DELTA_T_PARAM = "dt";
     private static final String ALGORITHM_PARAM = "algo";
+    private static final String DYNAMIC_FILE_PARAM = "dynamicSuf";
     private static final String V0_PARAM = "v0";
 
     private static final String STATIC_CONFIG_KEY = "static_file";
@@ -167,6 +168,8 @@ public class RadiationInteraction {
             if (algorithmType == null) throw new ArgumentException("Invalid algorithm name");
         }
 
+        String dynamicSuffix = properties.getProperty(DYNAMIC_FILE_PARAM, "");
+
         String deltaTimeProp = properties.getProperty(DELTA_T_PARAM);
         if (deltaTimeProp != null) {
             double value;
@@ -191,9 +194,9 @@ public class RadiationInteraction {
             v0 = value;
         }
 
-        // If dt or algo were set by param, rename dynamic file with algorithm and dt
+        // If dt, algo or dt were set by param and dynamic name wasn't, rename dynamic file with algorithm and dt
         if (algorithmName != null || deltaTimeProp != null || voProp != null) {
-            dynamicFilename = String.format("%s_%.5E_%d.txt", algorithmType.name(), deltaTimeSim, v0);
+            dynamicFilename = String.format("%s_%.5E_%d%s.txt", algorithmType.name(), deltaTimeSim, v0, dynamicSuffix);
         }
     }
 
