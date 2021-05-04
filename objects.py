@@ -1,3 +1,4 @@
+import enum
 import math
 import statistics as sts
 
@@ -56,6 +57,30 @@ class Particle1D(object):
     def __ne__(self, other):
         return not (self == other)
 
+class EndingReason(enum.Enum):
+    NotEnded = 0
+    TopWall = 1
+    RightWall = 2
+    BottomWall = 3
+    LeftWall = 4
+    Collision = 5
+
+    def __str__(self):
+        return self.__repr__()
+
+    def __repr__(self):
+        return "%s(%s)" % (self.name, self.value)
+
+    # Define hash and eq methods to allow comparation in equipment hash and eq
+    def __hash__(self):
+        return hash(self.value)
+
+    def __eq__(self, other):
+        return self.value == other.value
+
+    def __ne__(self, other):
+        return not (self == other)
+
 class Particle(object):
 
     def __init__(self, id, x=0, y=0, vx=0, vy=0, r=0, m=0, q=0):
@@ -102,10 +127,32 @@ class Particle(object):
     def get_v_mod(self):
         return (self.vx * self.vx + self.vy * self.vy) ** 0.5
 
+    def get_ending_reason(self, width, height):
+        if (self.x + self.r) >= width:
+            return EndingReason.RightWall
+        if (self.y + self.r) >= height:
+            return EndingReason.TopWall
+        if (self.x - self.r) <= 0.0:
+            return EndingReason.LeftWall
+        if (self.y - self.r) <= 0.0:
+            return EndingReason.BottomWall
+        return EndingReason.NotEnded
+
     def collides_with_wall(self, side):
         # 5.8000000E+00 --> Check if it counts all digits
         return (self.x + self.r) >= side or (self.y + self.r) >= side or (self.x - self.r) <= 0.0 or (self.y - self.r) <= 0.0
 
+    # Energy functions
+    def get_kinetic_energy(self):
+        return 0.5 * self.m * (self.vx * self.vx + self.vy * self.vy)
+
+    def get_potential_energy(self, static_particles, k):
+        pot_energy_sum = 0
+        for sp in static_particles:
+            pot_energy_sum += sp.q / self.center_distance(sp)
+        return k * self.q * pot_energy_sum
+
+    # Printing functions
     def __str__(self):
         return self.__repr__()
 

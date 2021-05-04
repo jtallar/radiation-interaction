@@ -69,9 +69,12 @@ def analyze_osc(dynamic_filename, algo, mass, k, gamma, amp, plot_boolean, delta
     
     return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)
 
+######################################################################################
+
 def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t):
     dynamic_file = open(dynamic_filename, "r")
 
+    Lx, Ly = 16 * D, 15 * D
     # Build static particle list
     static_particles = []
     for i in range(N):
@@ -85,11 +88,12 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
 
     # Initial values
     restart = True
-    p_id = 0
     
     time_vec = []
     algo_sol = []
-    ecms = []
+    energy_diff_vec = []
+    trajectory_interdist = []
+    trajectory_sumdist = 0
 
     for linenum, line in enumerate(dynamic_file):
         if restart:
@@ -109,15 +113,33 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
             float(line_vec[2]), float(line_vec[3]), 0, mass, Q)
         time_vec.append(time)
         algo_sol.append(part.x)
-        p_id += 1
+
+        # Save energy values
+        tot_energy = part.get_kinetic_energy() + part.get_potential_energy(static_particles, k)
+
+        # TODO: Check que tome bien el = 0
+        # Save interdistance value if time != 0
+        # Save tot_energy dif if time != 0
+        if time != 0:
+            # Save interdistance value
+            interdist = part.center_distance(prev_part)
+            trajectory_interdist.append(interdist)
+            trajectory_sumdist += interdist
+
+            # Save energy diff value
+            energy_diff_vec.append(abs(init_energy - tot_energy))
+        else:
+            init_energy = tot_energy
+            trajectory_interdist.append(0)
+        
+        prev_part = part
+
+    ending_motive = part.get_ending_reason(Lx, Ly)
 
     # Close files
     dynamic_file.close()
 
-    # Calculate ECM
-    ecm = sts.mean(ecms)
-    ecm_dev = sts.stdev(ecms)
-    print(f'ECM for {algo} with dt {delta_t:.10E} = {ecm:.10E}, dev = {ecm_dev:.10E}\n')
+    print(f'V0 is {v0} with dt {delta_t:.10E}.\nEnded by = {ending_motive}\n')
 
     # Plot values
     if plot_boolean:
@@ -137,4 +159,6 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
         # Hold execution
         utils.hold_execution()
     
-    return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)
+    # TODO: Do this
+    return 0
+    # return obj.AnalysisOsc(algo, delta_t, time_vec, exact_sol, algo_sol, ecm)
