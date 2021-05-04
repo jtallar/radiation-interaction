@@ -48,6 +48,10 @@ if dynamic_files is None:
 else:
     # Perform multiple iterations of same params (dt & v0)
     #   python analysisRad.py BEEMAN_1.00000E-15_10000_1.txt BEEMAN_1.00000E-15_10000_2.txt
+    err_x_superlist = []
+    err_y_superlist = []
+    err_legend_list = []
+
     ending_dict = {}
     err_sum_list = []
     l_tot_list = []
@@ -55,16 +59,35 @@ else:
         # Expected filename format: ALGO_dt_v0.txt
         name_data = filename[:-4].split('_') # Take filename without .txt extension
         metric = anl.analyze_rad(filename, name_data[0].lower(), mass, k, N, D, Q, float(name_data[2]), False, float(name_data[1]))
+        # Save specific value vars
         err_sum_list.append(metric.energy_diff_sum)
         l_tot_list.append(metric.trajectory_total)
         if metric.ending_motive not in ending_dict:
             ending_dict[metric.ending_motive] = 0
         ending_dict[metric.ending_motive] += 1
+        # Save plotting value vars
+        err_x_superlist.append(metric.time_vec[1:])
+        err_y_superlist.append(metric.energy_diff_vec)
+        err_legend_list.append(metric.dt)
     
     err_sum = obj.FullValue(sts.mean(err_sum_list), sts.stdev(err_sum_list))
     l_tot = obj.FullValue(sts.mean(l_tot_list), sts.stdev(l_tot_list))
 
-    print(f'V0 = {metric.v0} ; dt = {metric.dt}\n'
+    print(f'Last V0 = {metric.v0} ; Last dt = {metric.dt}\n'
           f'Error sum = {err_sum}\n'
           f'L total = {l_tot}\n'
           f'Ending dictionary: {ending_dict}\n')
+    
+    if plot_boolean:
+        # Initialize plotting
+        utils.init_plotter()
+
+        # Plot multiple |ET(0)-ET(t)| = f(t) for different dts
+        utils.plot_multiple_values(
+            err_x_superlist, 'tiempo (s)',
+            err_y_superlist, 'diferencia de ET(t) con ET(0) (J)',
+            err_legend_list, sci=True, log=True, precision=0
+        )
+
+        # Hold execution
+        utils.hold_execution()
