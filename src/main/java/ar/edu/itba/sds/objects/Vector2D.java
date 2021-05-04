@@ -28,6 +28,10 @@ public class Vector2D {
         return v1.getX() - v2.getX();
     }
 
+    public static double deltaY(Vector2D v1, Vector2D v2) {
+        return v1.getY() - v2.getY();
+    }
+
     public static Vector2D sum(Vector2D v1, Vector2D v2) {
         return new Vector2D(v1.getX() + v2.getX(), v1.getY() + v2.getY());
     }
@@ -40,16 +44,9 @@ public class Vector2D {
         return new Vector2D(v.getX() * scalar, v.getY() * scalar);
     }
 
-    public static Vector2D inv(Vector2D v) {
-        return new Vector2D(1 / v.getX(), 1 / v.getY());
-    }
-
-    public static double deltaY(Vector2D v1, Vector2D v2) {
-        return v1.getY() - v2.getY();
-    }
 
     public static double mod(Vector2D v1, Vector2D v2) {
-        return sqrt(pow(v1.getX() - v2.getX(), 2.0) + pow(v1.getX() - v2.getX(), 2.0));
+        return sqrt(pow(v1.getX() - v2.getX(), 2.0) + pow(v1.getY() - v2.getY(), 2.0));
     }
 
     public static Vector2D force(Vector2D v1, Vector2D v2, double k, double q, boolean pos) {

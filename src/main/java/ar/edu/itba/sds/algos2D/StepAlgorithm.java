@@ -72,8 +72,27 @@ public abstract class StepAlgorithm implements Iterator<Step<Vector2D>> {
     @Override
     public boolean hasNext() {
         if (lastTime < deltaT) return true;
-        if (pos.peek().getX() >= maxX || pos.peek().getX() <= 0.0 || pos.peek().getY() >= maxY || pos.peek().getY() <= 0.0) return false;
-        return staticParticles.keySet().stream().noneMatch(v -> mod(pos.peek(), v) < dCut);
+        if (pos.peek().getX() >= maxX) {
+            System.out.println("Algorithm finished. Crossed max X (n * d) position");
+            return false;
+        }
+        if (pos.peek().getX() <= 0.0) {
+            System.out.println("Algorithm finished. Crossed min X (0.0) position");
+            return false;
+        }
+        if (pos.peek().getY() >= maxY) {
+            System.out.println("Algorithm finished. Crossed max Y ((n - 1) * d) position");
+            return false;
+        }
+        if (pos.peek().getY() <= 0.0) {
+            System.out.println("Algorithm finished. Crossed min Y (0.0) position");
+            return false;
+        }
+        if (staticParticles.keySet().stream().anyMatch(v -> mod(pos.peek(), v) < dCut)) {
+            System.out.println("Algorithm finished. Close particles");
+            return false;
+        }
+        return true;
     }
 
     // private auxiliary functions
