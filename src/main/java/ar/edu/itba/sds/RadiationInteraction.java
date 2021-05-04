@@ -183,7 +183,7 @@ public class RadiationInteraction {
         if (voProp != null) {
             int value;
             try {
-                value = Integer.parseInt(voProp);
+                value = (int) Double.parseDouble(voProp);
                 if (value <= 0) throw new NumberFormatException();
             } catch (NumberFormatException e) {
                 throw new ArgumentException(String.format("Invalid %s param", V0_PARAM));
@@ -192,8 +192,8 @@ public class RadiationInteraction {
         }
 
         // If dt or algo were set by param, rename dynamic file with algorithm and dt
-        if (algorithmName != null || deltaTimeProp != null) {
-            dynamicFilename = String.format("%s-%.10E.txt", algorithmType.name(), deltaTimeSim);
+        if (algorithmName != null || deltaTimeProp != null || voProp != null) {
+            dynamicFilename = String.format("%s_%.5E_%d.txt", algorithmType.name(), deltaTimeSim, v0);
         }
     }
 
