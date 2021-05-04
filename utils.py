@@ -201,7 +201,7 @@ def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_labe
 
     return colors
 
-def plot_values(x_values, x_label, y_values, y_label, precision=2, sci_x=False, sci_y=True, min_val=None, max_val=None, save_name=None):
+def plot_values(x_values, x_label, y_values, y_label, precision=2, sci_x=False, sci_y=True, log=False, min_val=None, max_val=None, save_name=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
     ax.plot(x_values, y_values)  # Plot some data on the axes
     ax.set_xlabel(x_label)
@@ -211,11 +211,14 @@ def plot_values(x_values, x_label, y_values, y_label, precision=2, sci_x=False, 
         ax.set_xlim([min_val, max_val])
         ax.set_ylim([min_val, max_val])
 
+    if log:
+        ax.set_yscale('log')
+
     if sci_x:
-        ax.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+        if not log: ax.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
         ax.xaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
     if sci_y:
-        ax.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        if not log: ax.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
         ax.yaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
 
     plt.grid()
