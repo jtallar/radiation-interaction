@@ -92,7 +92,7 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
     time_vec = []
     algo_sol = []
     energy_diff_vec = []
-    trajectory_interdist = []
+    trajectory_sum_interdist = []
     trajectory_sumdist = 0
 
     for linenum, line in enumerate(dynamic_file):
@@ -123,14 +123,14 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
         if time != 0:
             # Save interdistance value
             interdist = part.center_distance(prev_part)
-            trajectory_interdist.append(interdist)
             trajectory_sumdist += interdist
+            trajectory_sum_interdist.append(trajectory_sumdist)
 
             # Save energy diff value
             energy_diff_vec.append(abs(init_energy - tot_energy))
         else:
             init_energy = tot_energy
-            trajectory_interdist.append(0)
+            trajectory_sum_interdist.append(0)
         
         prev_part = part
 
@@ -139,21 +139,28 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
     # Close files
     dynamic_file.close()
 
-    print(f'V0 is {v0} with dt {delta_t:.10E}.\nEnded by = {ending_motive}\n')
+    print(f'V0 is {v0} with dt {delta_t:.10E}\n'
+          f'Init total energy is {init_energy:.10E}\n'
+          f'Total trajectory length = {trajectory_sumdist:.10E}\n'
+          f'Ended by = {ending_motive}\n')
 
     # Plot values
     if plot_boolean:
         # Initialize plotting
         utils.init_plotter()
 
-        # Plot real trajectory with estimated one
-        utils.plot_multiple_values(
-            [time_vec, time_vec],
-            'tiempo (s)',
-            [exact_sol, algo_sol],
-            'posición (m)',
-            ['Analítica', algo],
-            sci=False
+        # Plot |ET(t=0) - ET(t>0)| = f(t) with log scale
+        utils.plot_values(
+            time_vec[1:], 'tiempo (s)', 
+            energy_diff_vec, 'diferencia de ET(t) con ET(0) (J)',
+            log=True, sci_x=True, precision=0
+        )
+        
+        # Plot L = f(t) --> trajectory length
+        utils.plot_values(
+            time_vec, 'tiempo (s)', 
+            trajectory_sum_interdist, 'longitud de trayectoria (m)',
+            sci_x=True, precision=0
         )
 
         # Hold execution
