@@ -64,6 +64,7 @@ else:
     err_sum = obj.FullValue(sts.mean(err_sum_list), sts.stdev(err_sum_list))
     l_tot = obj.FullValue(sts.mean(l_tot_list), sts.stdev(l_tot_list))
 
-    print(f'Error sum = {err_sum}\n'
+    print(f'V0 = {metric.v0} ; dt = {metric.dt}\n'
+          f'Error sum = {err_sum}\n'
           f'L total = {l_tot}\n'
           f'Ending dictionary: {ending_dict}\n')
