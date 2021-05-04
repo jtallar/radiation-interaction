@@ -46,7 +46,9 @@ if dynamic_files is None:
     # python analysisRad.py
     anl.analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t)
 else:
-    # Perform multiple iterations of same params (dt & v0)
+    # Analyze multiple dts with same v0 --> |ET(0)-ET(t)| = f(t)
+    #   python analysisRad.py BEEMAN_1.00000E-15_100000_1.txt BEEMAN_1.00000E-14_100000_2.txt
+    # Or perform multiple iterations of same params (dt & v0)
     #   python analysisRad.py BEEMAN_1.00000E-15_10000_1.txt BEEMAN_1.00000E-15_10000_2.txt
     err_x_superlist = []
     err_y_superlist = []
