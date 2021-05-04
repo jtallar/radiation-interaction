@@ -201,16 +201,34 @@ class AnalysisOsc(object):
         self.ecm = ecm
 
 class AnalysisRad(object):
-    def __init__(self, algo, dt, v0, init_energy, trajectory_total, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist):
+    def __init__(self, algo, dt, v0, init_energy, trajectory_total, energy_diff_sum, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist):
         self.algo = algo
         self.dt = dt
         self.v0 = v0
         self.init_energy = init_energy
         self.trajectory_total = trajectory_total
+        self.energy_diff_sum = energy_diff_sum
         self.ending_motive = ending_motive
         self.time_vec = time_vec
         self.energy_diff_vec = energy_diff_vec
         self.trajectory_sum_interdist = trajectory_sum_interdist
+
+
+class FullValue(object):
+    def __init__(self, media, std):
+        if std == 0:
+            self.dec_count = 3
+        else:
+            exp = math.floor(math.log10(std))
+            self.dec_count = abs(exp) if exp < 0 else 0
+        self.media = round(media, self.dec_count)
+        self.std = round(std, self.dec_count)
+    
+    def __str__(self):
+        return self.__repr__()
+    
+    def __repr__(self):
+        return "%s±%s" % (self.media, self.std)
 
 ###################### OLD ######################
 class IdDistance(object):
@@ -258,22 +276,6 @@ class Metrics(object):
     
     def __repr__(self):
         return "%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s" % (self.N, self.L, self.kinetic_energy, "self.big_position_x_list", "self.big_position_y_list", self.collision_count, self.collision_freq, self.avg_intercollision_time, self.small_dcm_D, "self.big_z_dist_list", "self.big_z_dist_time_list")
-
-class FullValue(object):
-    def __init__(self, media, std):
-        if std == 0:
-            self.dec_count = 3
-        else:
-            exp = math.ceil(math.log10(std))
-            self.dec_count = abs(exp) if exp < 0 else 0
-        self.media = round(media, self.dec_count)
-        self.std = round(std, self.dec_count)
-    
-    def __str__(self):
-        return self.__repr__()
-    
-    def __repr__(self):
-        return "%s±%s" % (self.media, self.std)
 
 class Summary(object):
     def __init__(self, metric_list, param, big_dcm=True):

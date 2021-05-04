@@ -92,6 +92,7 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
     time_vec = []
     algo_sol = []
     energy_diff_vec = []
+    energy_diff_sum = 0
     trajectory_sum_interdist = []
     trajectory_sumdist = 0
 
@@ -126,7 +127,9 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
             trajectory_sum_interdist.append(trajectory_sumdist)
 
             # Save energy diff value
-            energy_diff_vec.append(abs(init_energy - tot_energy))
+            energy_diff = abs(init_energy - tot_energy)
+            energy_diff_sum += energy_diff
+            energy_diff_vec.append(energy_diff)
         else:
             init_energy = tot_energy
             trajectory_sum_interdist.append(0)
@@ -141,6 +144,7 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
     print(f'V0 is {v0} with dt {delta_t:.10E}\n'
           f'Init total energy is {init_energy:.10E}\n'
           f'Total trajectory length = {trajectory_sumdist:.10E}\n'
+          f'Total energy diff = {energy_diff_sum:.10E}\n'
           f'Ended by = {ending_motive}\n')
 
     # Plot values
@@ -164,4 +168,4 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
 
         # Hold execution
         utils.hold_execution()
-    return obj.AnalysisRad(algo, delta_t, v0, init_energy, trajectory_sumdist, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist)
+    return obj.AnalysisRad(algo, delta_t, v0, init_energy, trajectory_sumdist, energy_diff_sum, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist)
