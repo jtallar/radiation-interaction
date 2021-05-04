@@ -167,7 +167,7 @@ def plot_values_with_adjust(x_values, x_label, y_values, y_label, precision=2, s
 
     return c
 
-def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_label, legend_list, precision=2, sci_x=False, sci_y=True, min_val=None, max_val=None, log_x=False, log_y=False, legend_loc='upper right', save_name=None):
+def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_label, legend_list, precision=2, sci_x=False, sci_y=True, min_val_x=None, max_val_x=None, min_val_y=None, max_val_y=None, log_x=False, log_y=False, legend_loc='upper right', save_name=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
 
     colors = []
@@ -183,9 +183,10 @@ def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_labe
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     
-    if min_val is not None and max_val is not None:
-        ax.set_xlim([min_val, max_val])
-        ax.set_ylim([min_val, max_val])
+    if min_val_x is not None and max_val_x is not None:
+        ax.set_xlim([min_val_x, max_val_x])
+    if min_val_y is not None and max_val_y is not None:
+        ax.set_ylim([min_val_y, max_val_y])
 
     if sci_x:
         if not log_x: ax.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
