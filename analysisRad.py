@@ -64,6 +64,7 @@ else:
     }
     err_sum_list = []
     l_tot_list = []
+    step_list = []
     for filename in dynamic_files:
         # Expected filename format: ALGO_dt_v0.txt
         name_data = filename[:-4].split('_') # Take filename without .txt extension
@@ -71,6 +72,7 @@ else:
         # Save specific value vars
         err_sum_list.append(metric.energy_diff_sum)
         l_tot_list.append(metric.trajectory_total)
+        step_list.append(len(metric.time_vec) - 1)
         ending_dict[metric.ending_motive] += 1
         # Save plotting value vars
         err_x_superlist.append(metric.time_vec[1:])
@@ -79,10 +81,12 @@ else:
     
     err_sum = obj.FullValue(sts.mean(err_sum_list), sts.stdev(err_sum_list))
     l_tot = obj.FullValue(sts.mean(l_tot_list), sts.stdev(l_tot_list))
+    steps = obj.FullValue(sts.mean(step_list), sts.stdev(step_list))
 
     print(f'Last V0 = {metric.v0} ; Last dt = {metric.dt}\n'
           f'Error sum = {err_sum}\n'
           f'L total = {l_tot}\n'
+          f'Steps = {steps}\n'
           f'Ending dictionary: {ending_dict}\n')
     
     if plot_boolean:
