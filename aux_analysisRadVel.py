@@ -8,7 +8,7 @@ import utils
 # 4. Run python aux_analysisRadVel.py
 
 # Values obtained by runnning
-#   ./multipleDt.sh 0.00001 0.00001 0.00010;
+#   ./multipleDtOsc.sh 0.00001 0.00001 0.00010;
 # Replace with repetition count
 rep_count = 10
 # Replace delta_t values here (delta_t_sim = delta_t_print)

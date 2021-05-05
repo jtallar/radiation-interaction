@@ -1,7 +1,7 @@
 #!/bin/bash
 if [ "$#" -ne 3 ]; then
     echo "Illegal number of parameters." 
-    echo "Run with ./multipleDt.sh dt_start dt_step dt_end"
+    echo "Run with ./multipleDtOsc.sh dt_start dt_step dt_end"
     exit 1
 fi
 
