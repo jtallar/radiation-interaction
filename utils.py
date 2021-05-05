@@ -205,15 +205,47 @@ def plot_multiple_values(x_values_superlist, x_label, y_values_superlist, y_labe
 
     return colors
 
-def plot_values(x_values, x_label, y_values, y_label, precision=2, sci_x=False, sci_y=True, log=False, min_val=None, max_val=None, save_name=None):
+def plot_values(x_values, x_label, y_values, y_label, precision=2, sci_x=False, sci_y=True, log=False, min_val_x=None, max_val_x=None, min_val_y=None, max_val_y=None, save_name=None):
     fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
     ax.plot(x_values, y_values)  # Plot some data on the axes
     ax.set_xlabel(x_label)
     ax.set_ylabel(y_label)
     
-    if min_val is not None and max_val is not None:
-        ax.set_xlim([min_val, max_val])
-        ax.set_ylim([min_val, max_val])
+    if min_val_x is not None and max_val_x is not None:
+        ax.set_xlim([min_val_x, max_val_x])
+    if min_val_y is not None and max_val_y is not None:
+        ax.set_ylim([min_val_y, max_val_y])
+
+    if log:
+        ax.set_yscale('log')
+
+    if sci_x:
+        if not log: ax.ticklabel_format(axis="x", style="sci", scilimits=(0,0))
+        ax.xaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
+    if sci_y:
+        if not log: ax.ticklabel_format(axis="y", style="sci", scilimits=(0,0))
+        ax.yaxis.set_major_formatter(MathTextSciFormatter(f'%1.{precision}e'))
+
+    plt.grid()
+    plt.tight_layout()
+    if save_name:
+        plt.savefig(save_name)
+    else:
+        plt.show(block=False)
+
+def plot_values_with_scatter(x_values, x_label, y_values, y_label, precision=2, sci_x=False, sci_y=True, log=False, min_val_x=None, max_val_x=None, min_val_y=None, max_val_y=None, scatter_superlist=None, save_name=None):
+    fig, ax = plt.subplots(figsize=(12, 10))  # Create a figure containing a single axes.
+    ax.plot(x_values, y_values)  # Plot some data on the axes
+    ax.set_xlabel(x_label)
+    ax.set_ylabel(y_label)
+
+    if scatter_superlist is not None:
+        plt.scatter(scatter_superlist[0], scatter_superlist[1], c=scatter_superlist[2], s=8)
+
+    if min_val_x is not None and max_val_x is not None:
+        ax.set_xlim([min_val_x, max_val_x])
+    if min_val_y is not None and max_val_y is not None:
+        ax.set_ylim([min_val_y, max_val_y])
 
     if log:
         ax.set_yscale('log')

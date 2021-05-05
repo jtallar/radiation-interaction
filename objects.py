@@ -201,7 +201,7 @@ class AnalysisOsc(object):
         self.ecm = ecm
 
 class AnalysisRad(object):
-    def __init__(self, algo, dt, v0, init_energy, trajectory_total, energy_diff_sum, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist):
+    def __init__(self, algo, dt, v0, init_energy, trajectory_total, energy_diff_sum, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist, pos_x_list, pos_y_list):
         self.algo = algo
         self.dt = dt
         self.v0 = v0
@@ -212,6 +212,8 @@ class AnalysisRad(object):
         self.time_vec = time_vec
         self.energy_diff_vec = energy_diff_vec
         self.trajectory_sum_interdist = trajectory_sum_interdist
+        self.pos_x_list = pos_x_list
+        self.pos_y_list = pos_y_list
 
 
 class FullValue(object):

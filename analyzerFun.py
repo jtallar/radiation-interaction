@@ -90,7 +90,8 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
     restart = True
     
     time_vec = []
-    algo_sol = []
+    pos_x_list = []
+    pos_y_list = []
     energy_diff_vec = []
     energy_diff_sum = 0
     trajectory_sum_interdist = []
@@ -113,7 +114,8 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
             p_id, float(line_vec[0]), float(line_vec[1]), 
             float(line_vec[2]), float(line_vec[3]), 0, mass, Q)
         time_vec.append(time)
-        algo_sol.append(part.x)
+        pos_x_list.append(part.x)
+        pos_y_list.append(part.y)
 
         # Save energy values
         tot_energy = part.get_kinetic_energy() + part.get_potential_energy(static_particles, k)
@@ -166,6 +168,22 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
             sci_x=True, precision=0
         )
 
+        static_x = []
+        static_y = []
+        static_c = []
+        for sp in static_particles:
+            static_x.append(sp.x)
+            static_y.append(sp.y)
+            static_c.append('red' if sp.q > 0 else 'black')
+
+        # Particle trayectory full box size
+        utils.plot_values_with_scatter(
+            pos_x_list, 'X partícula incidente (m)', 
+            pos_y_list, 'Y partícula incidente (m)', 
+            1, sci_x=True, min_val_x=0, max_val_x=Lx, min_val_y=0, max_val_y=Ly,
+            scatter_superlist=[static_x, static_y, static_c]
+        )
+
         # Hold execution
         utils.hold_execution()
-    return obj.AnalysisRad(algo, delta_t, v0, init_energy, trajectory_sumdist, energy_diff_sum, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist)
+    return obj.AnalysisRad(algo, delta_t, v0, init_energy, trajectory_sumdist, energy_diff_sum, ending_motive, time_vec, energy_diff_vec, trajectory_sum_interdist, pos_x_list, pos_y_list)
