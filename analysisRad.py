@@ -52,7 +52,10 @@ else:
     #   python analysisRad.py BEEMAN_1.00000E-15_10000_1.txt BEEMAN_1.00000E-15_10000_2.txt
     err_x_superlist = []
     err_y_superlist = []
-    err_legend_list = []
+    dt_legend_list = []
+
+    pos_x_superlist = []
+    pos_y_superlist = []
 
     ending_dict = {
         obj.EndingReason.TopWall: 0,
@@ -77,7 +80,9 @@ else:
         # Save plotting value vars
         err_x_superlist.append(metric.time_vec[1:])
         err_y_superlist.append(metric.energy_diff_vec)
-        err_legend_list.append(metric.dt)
+        dt_legend_list.append(metric.dt)
+        pos_x_superlist.append(metric.pos_x_list)
+        pos_y_superlist.append(metric.pos_y_list)
     
     err_sum = obj.FullValue(sts.mean(err_sum_list), sts.stdev(err_sum_list))
     l_tot = obj.FullValue(sts.mean(l_tot_list), sts.stdev(l_tot_list))
@@ -93,13 +98,30 @@ else:
         # Initialize plotting
         utils.init_plotter()
 
-        # TODO: Plot multiple trajectories
-
         # Plot multiple |ET(0)-ET(t)| = f(t) for different dts
         utils.plot_multiple_values(
             err_x_superlist, 'tiempo (s)',
             err_y_superlist, 'diferencia de ET(t) con ET(0) (J)',
-            err_legend_list, sci_x=True, log_y=True, precision=0
+            dt_legend_list, sci_x=True, log_y=True, precision=0
+        )
+
+        Lx, Ly = 16 * D, 15 * D
+        # Build static particle list
+        static_x = []
+        static_y = []
+        static_c = []
+        for i in range(N):
+            for j in range(N):
+                static_x.append((i + 1) * D)
+                static_y.append(j * D)
+                static_c.append('red' if (i + j) % 2 == 0 else 'black')
+
+        # Plot multiple particle trajectories full box size
+        utils.plot_multiple_values_with_scatter(
+            pos_x_superlist, 'X partícula incidente (m)', 
+            pos_y_superlist, 'Y partícula incidente (m)', 
+            dt_legend_list, precision=1, sci_x=True, min_val_x=0, max_val_x=Lx, min_val_y=0, max_val_y=Ly,
+            scatter_superlist=[static_x, static_y, static_c]
         )
 
         # Hold execution
