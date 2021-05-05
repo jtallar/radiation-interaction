@@ -136,7 +136,7 @@ class Particle(object):
             return EndingReason.LeftWall
         if (self.y - self.r) <= 0.0:
             return EndingReason.BottomWall
-        return EndingReason.NotEnded
+        return EndingReason.Collision
 
     def collides_with_wall(self, side):
         # 5.8000000E+00 --> Check if it counts all digits

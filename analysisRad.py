@@ -55,7 +55,6 @@ else:
     err_legend_list = []
 
     ending_dict = {
-        obj.EndingReason.NotEnded: 0,
         obj.EndingReason.TopWall: 0,
         obj.EndingReason.RightWall: 0,
         obj.EndingReason.BottomWall: 0,
@@ -67,6 +66,7 @@ else:
     step_list = []
     for filename in dynamic_files:
         # Expected filename format: ALGO_dt_v0.txt
+        print(filename)
         name_data = filename[:-4].split('_') # Take filename without .txt extension
         metric = anl.analyze_rad(filename, name_data[0].lower(), mass, k, N, D, Q, float(name_data[2]), False, float(name_data[1]))
         # Save specific value vars
@@ -92,6 +92,8 @@ else:
     if plot_boolean:
         # Initialize plotting
         utils.init_plotter()
+
+        # TODO: Plot multiple trajectories
 
         # Plot multiple |ET(0)-ET(t)| = f(t) for different dts
         utils.plot_multiple_values(
