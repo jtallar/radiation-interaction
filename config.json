@@ -22,7 +22,7 @@
         "Q": 1e-19,
         "v0": 10e3,
         "use_seed": false,
-        "seed": 1234
+        "seed": 1534342
     },
 
     "delta_t_sim": 1e-15,

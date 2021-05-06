@@ -8,8 +8,7 @@ fi
 # Disable plotting if enabled
 sed -i -e 's/\"plot\": true/\"plot\": false/g' config.json
 
-# TODO: Definir el dt correcto para el sistema
-DT=$(echo "0.00000000000001" | bc -l)
+DT=$(echo "0.0000000000000001" | bc -l)
 V0=10000
 while (( $(echo "$V0 <= 100000" | bc -l) ))
 do
