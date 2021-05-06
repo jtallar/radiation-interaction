@@ -7,6 +7,29 @@ import analyzerFun as anl
 import statistics as sts
 import objects as obj
 
+def build_error_mult(dt, err_list):
+    err_mean = []
+    err_std = []
+    time_list = []
+    finished = False
+    time_index = 0
+    while not finished:
+        cur_t_err_list = []
+        for i in range(len(err_list)):
+            if time_index >= len(err_list[i]):
+                finished = True
+                break
+            cur_t_err_list.append(err_list[i][time_index])
+        
+        if not finished:
+            err_mean.append(sts.mean(cur_t_err_list))
+            err_std.append(sts.stdev(cur_t_err_list))
+            time_list.append(dt * (time_index + 1))
+
+        time_index += 1
+    
+    return time_list, err_mean, err_std
+
 # Read out filename param if provided
 dynamic_files = None
 if len(sys.argv) >= 2:
@@ -57,6 +80,8 @@ else:
     pos_x_superlist = []
     pos_y_superlist = []
 
+    dt_err_dic = {}
+
     ending_dict = {
         obj.EndingReason.TopWall: 0,
         obj.EndingReason.RightWall: 0,
@@ -83,10 +108,29 @@ else:
         dt_legend_list.append(metric.dt)
         pos_x_superlist.append(metric.pos_x_list)
         pos_y_superlist.append(metric.pos_y_list)
+        # Save energy_diff_vec per dt
+        if metric.dt not in dt_err_dic:
+            dt_err_dic[metric.dt] = []
+        dt_err_dic[metric.dt].append(metric.energy_diff_vec)
     
     err_sum = obj.FullValue(sts.mean(err_sum_list), sts.stdev(err_sum_list))
     l_tot = obj.FullValue(sts.mean(l_tot_list), sts.stdev(l_tot_list))
     steps = obj.FullValue(sts.mean(step_list), sts.stdev(step_list))
+
+    multiple_rep_dt = True
+    dt_sum_err_x_superlist = []
+    dt_sum_err_mean_superlist = []
+    dt_sum_err_std_superlist = []
+    dt_sum_legend_list = []
+    for dt, err_list in dt_err_dic.items():
+        if len(err_list) == 1:
+            multiple_rep_dt = False
+            break
+        time_list, err_mean, err_std = build_error_mult(dt, err_list)
+        dt_sum_err_x_superlist.append(time_list)
+        dt_sum_err_mean_superlist.append(err_mean)
+        dt_sum_err_std_superlist.append(err_std)
+        dt_sum_legend_list.append(dt)
 
     print(f'Last V0 = {metric.v0} ; Last dt = {metric.dt}\n'
           f'Error sum = {err_sum}\n'
@@ -104,6 +148,15 @@ else:
             err_y_superlist, 'diferencia de ET(t) con ET(0) (J)',
             dt_legend_list, sci_x=True, log_y=True, precision=0
         )
+
+        if multiple_rep_dt:
+            # Plot errorbars for |ET(0)-ET(t)| = f(t) for different dts
+            utils.plot_multiple_error_bars(
+                dt_sum_err_x_superlist, 'tiempo (s)', 
+                dt_sum_err_mean_superlist, 'diferencia de ET(t) con ET(0) (J)', 
+                dt_sum_err_std_superlist, dt_sum_legend_list,
+                sci_x=True, log_y=True, x_prec=1, y_prec=0
+            )
 
         Lx, Ly = 16 * D, 15 * D
         # Build static particle list

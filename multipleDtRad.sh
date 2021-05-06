@@ -15,6 +15,7 @@ V0=10000
 DT=$(printf "%.30f" $1)
 STEP=$(printf "%.30f" $2)
 DT_MAX=$(printf "%.30f" $3)
+ALL_OUT=""
 while (( $(echo "$DT <= $DT_MAX" | bc -l) ))
 do
     OUT=""
@@ -24,9 +25,11 @@ do
         OUT="$OUT $AUX"
     done
     python3.8 analysisRad.py $OUT
+    ALL_OUT="$ALL_OUT $OUT"
     echo "-----------------------------------"
     DT=$(echo "$DT + $STEP" | bc -l)
 done
 
+echo "$ALL_OUT"
 # Reenable plotting
 sed -i -e 's/\"plot\": false/\"plot\": true/g' config.json
