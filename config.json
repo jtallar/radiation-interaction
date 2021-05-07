@@ -1,5 +1,5 @@
 {
-    "dynamic_file": "dynamic.txt",
+    "dynamic_file": "BEEMAN_1.00000E-16_100000.txt",
     "simulation_file": "simu.xyz",
 
     "osc": {
@@ -26,6 +26,7 @@
 
     "delta_t_sim": 1e-15,
     "delta_t_print": 1e-15,
+    "delta_t_anim": 1e-14,
 
     "plot": true
 }

@@ -29,6 +29,8 @@ dynamic_filename = utils.read_config_param(
     config, "dynamic_file", lambda el : el, lambda el : True)
 simulation_filename = utils.read_config_param(
     config, "simulation_file", lambda el : el, lambda el : True)
+delta_t = utils.read_config_param(
+    config, "delta_t_anim", lambda el : float(el), lambda el : el > 0)
 # There are (N x N + 1) particles
 N = utils.read_config_param(
     config["rad"], "N", lambda el : int(el), lambda el : el > 0)
@@ -57,25 +59,33 @@ ovito_file = open(simulation_filename, "w")
 dynamic_file = open(dynamic_filename, "r")
 
 restart = True
+target_time = 0
 for linenum, line in enumerate(dynamic_file):
     if restart:
         time = float(line.rstrip())
-        write_corners(ovito_file, part_count, Lx, Ly)
+        if time >= target_time:
+            write_corners(ovito_file, part_count, Lx, Ly)
         restart = False
         p_id = 0
         continue
     if "*" == line.rstrip():
         restart = True
-        line = ''
-        for p in static_particles:
-            line += get_ovito_line(radius / 3, p.x, p.y, p.id, p.q > 0)
-        ovito_file.write(line)
+        if time >= target_time:
+            target_time += delta_t
+            if time >= target_time:
+                print('Delta t is too small, there were no events in a gap! Exiting...')
+                sys.exit(1)
+            line = ''
+            for p in static_particles:
+                line += get_ovito_line(radius / 2, p.x, p.y, p.id, p.q > 0)
+            ovito_file.write(line)
         continue
-
-    line_vec = line.rstrip().split(' ') # x y vx vy
-    (x,y,r) = (line_vec[0], line_vec[1], radius)
-    (vx,vy) = (float(line_vec[2]), float(line_vec[3]))
-    ovito_file.write(get_ovito_line(r, x, y, 0, True))
+    
+    if time >= target_time:
+        line_vec = line.rstrip().split(' ') # x y vx vy
+        (x,y,r) = (line_vec[0], line_vec[1], radius)
+        (vx,vy) = (float(line_vec[2]), float(line_vec[3]))
+        ovito_file.write(get_ovito_line(r, x, y, 0, True))
 
 print(f'Generated {simulation_filename}')
 
