@@ -167,7 +167,7 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
         utils.plot_values(
             time_vec, 'tiempo (s)', 
             trajectory_sum_interdist, 'longitud de trayectoria (m)',
-            sci_x=True, precision=0
+            sci_x=True, precision=1
         )
 
         static_x = []

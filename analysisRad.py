@@ -30,11 +30,6 @@ def build_error_mult(dt, err_list):
     
     return time_list, err_mean, err_std
 
-# Read out filename param if provided
-dynamic_files = None
-if len(sys.argv) >= 2:
-    dynamic_files = sys.argv[1:]
-
 # Read params from config.json
 with open("config.json") as file:
     config = json.load(file)
@@ -48,6 +43,13 @@ plot_boolean = utils.read_config_param(
     config, "plot", lambda el : bool(el), lambda el : True)
 delta_t = utils.read_config_param(
     config, "delta_t_sim", lambda el : float(el), lambda el : el > 0)
+
+# Read out filename param if provided
+dynamic_files = None
+if len(sys.argv) >= 2:
+    dynamic_files = sys.argv[1:]
+    dynamic_filename = dynamic_files[0]
+
 # Read RAD params
 algo = utils.read_config_param(
     config["rad"], "algo", lambda el : el, lambda el : True)
