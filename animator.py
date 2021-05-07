@@ -25,8 +25,11 @@ with open("config.json") as file:
 if "rad" not in config:
     invalid_param("rad")
 
-dynamic_filename = utils.read_config_param(
-    config, "dynamic_file", lambda el : el, lambda el : True)
+if len(sys.argv) == 2:
+    dynamic_filename = sys.argv[1]
+else:
+    dynamic_filename = utils.read_config_param(
+        config, "dynamic_file", lambda el : el, lambda el : True)
 simulation_filename = utils.read_config_param(
     config, "simulation_file", lambda el : el, lambda el : True)
 delta_t = utils.read_config_param(
