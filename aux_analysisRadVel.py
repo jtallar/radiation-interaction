@@ -28,8 +28,8 @@ utils.init_plotter()
 
 utils.plot_multiple_values(
     [v0s, v0s, v0s, v0s, v0s], 'velocidad inicial (m/s)', 
-    [top_wall_count, right_wall_count, bot_wall_count, left_wall_count, collision_count], 'frecuencia', 
-    ['top wall', 'right wall', 'bottom wall', 'left wall', 'collision'], legend_loc='upper right', precision=0,
+    [top_wall_count, right_wall_count, bot_wall_count, left_wall_count, collision_count], 'probabilidad', 
+    ['pared arriba', 'pared derecha', 'pared abajo', 'pared izquierda', 'colisión'], legend_loc='center right', precision=0,
     sci_x=True, sci_y=False, min_val_y=-0.1, max_val_y=1.1)
 
 # Plot errorbars for trajectory length = f(v0)

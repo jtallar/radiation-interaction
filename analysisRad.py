@@ -64,7 +64,7 @@ Q = utils.read_config_param(
 v0 = utils.read_config_param(
     config["rad"], "v0", lambda el : float(el), lambda el : el > 0)
 
-if dynamic_files is None:
+if dynamic_files is None or len(dynamic_files) == 1:
     # Perform one analysis
     # python analysisRad.py
     anl.analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delta_t)

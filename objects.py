@@ -157,7 +157,7 @@ class Particle(object):
         return self.__repr__()
 
     def __repr__(self):
-        return "Particle %s(%.2f,%.2f; r=%.2f)" % (self.id, self.x, self.y, self.r)
+        return "Particle %s(%.2E,%.2E; r=%.2f)" % (self.id, self.x, self.y, self.r)
 
     # Define hash and eq methods to allow key usage
     def __hash__(self):
