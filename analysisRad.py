@@ -155,11 +155,11 @@ else:
 
         if multiple_rep_dt:
             # Plot errorbars for |ET(0)-ET(t)| = f(t) for different dts
-            utils.plot_multiple_error_bars(
+            utils.plot_multiple_values(
                 dt_sum_err_x_superlist, 'tiempo (s)', 
                 dt_sum_err_mean_superlist, 'diferencia de ET(t) con ET(0) (J)', 
-                dt_sum_err_std_superlist, dt_sum_legend_list,
-                sci_x=True, log_y=True, x_prec=1, y_prec=0
+                dt_sum_legend_list,
+                sci_x=True, log_y=True, precision=0
             )
 
         Lx, Ly = 16 * D, 15 * D
