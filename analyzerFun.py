@@ -147,6 +147,7 @@ def analyze_rad(dynamic_filename, algo, mass, k, N, D, Q, v0, plot_boolean, delt
           f'Init total energy is {init_energy:.10E}\n'
           f'Total trajectory length = {trajectory_sumdist:.10E}\n'
           f'Total energy diff = {energy_diff_sum:.10E}\n'
+          f'Avg energy diff = {energy_diff_sum / len(time_vec):.10E}\n'
           f'Final time = {time:.10E}\n'
           f'Ended by = {ending_motive} in {len(time_vec) - 1} steps\n')
 

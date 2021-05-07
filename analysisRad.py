@@ -76,6 +76,7 @@ else:
     err_x_superlist = []
     err_y_superlist = []
     dt_legend_list = []
+    v0_legend_list = []
 
     pos_x_superlist = []
     pos_y_superlist = []
@@ -106,6 +107,7 @@ else:
         err_x_superlist.append(metric.time_vec[1:])
         err_y_superlist.append(metric.energy_diff_vec)
         dt_legend_list.append(metric.dt)
+        v0_legend_list.append(metric.v0)
         pos_x_superlist.append(metric.pos_x_list)
         pos_y_superlist.append(metric.pos_y_list)
         # Save energy_diff_vec per dt
@@ -174,6 +176,14 @@ else:
             pos_x_superlist, 'X partícula incidente (m)', 
             pos_y_superlist, 'Y partícula incidente (m)', 
             dt_legend_list, precision=1, sci_x=True, min_val_x=0, max_val_x=Lx, min_val_y=0, max_val_y=Ly,
+            scatter_superlist=[static_x, static_y, static_c]
+        )
+
+        # Plot multiple particle trajectories full box size
+        utils.plot_multiple_values_with_scatter(
+            pos_x_superlist, 'X partícula incidente (m)', 
+            pos_y_superlist, 'Y partícula incidente (m)', 
+            v0_legend_list, precision=1, sci_x=True, min_val_x=0, max_val_x=Lx, min_val_y=0, max_val_y=Ly,
             scatter_superlist=[static_x, static_y, static_c]
         )
 
