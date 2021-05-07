@@ -1,5 +1,4 @@
 {
-    "static_file": "static.txt",
     "dynamic_file": "dynamic.txt",
     "simulation_file": "simu.xyz",
 

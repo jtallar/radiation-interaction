@@ -26,7 +26,6 @@ public class RadiationInteraction {
     private static final String DYNAMIC_FILE_PARAM = "dynamicSuf";
     private static final String V0_PARAM = "v0";
 
-    private static final String STATIC_CONFIG_KEY = "static_file";
     private static final String DYNAMIC_CONFIG_KEY = "dynamic_file";
 
     private static final String DELTA_T_SIM_CONFIG_KEY = "delta_t_sim";
@@ -48,7 +47,7 @@ public class RadiationInteraction {
 
     private static final int ERROR_STATUS = 1;
 
-    private static String staticFilename, dynamicFilename;
+    private static String dynamicFilename;
     private static AlgorithmType algorithmType;
     private static double mass, k, d, q;
     private static double r0;
@@ -132,7 +131,6 @@ public class RadiationInteraction {
 
         try(BufferedReader reader = new BufferedReader(new FileReader(configFilename))) {
             JSONObject config = new JSONObject(reader.lines().collect(Collectors.joining()));
-            staticFilename = config.getString(STATIC_CONFIG_KEY);
             dynamicFilename = config.getString(DYNAMIC_CONFIG_KEY);
             deltaTimeSim = getConfigDouble(config, DELTA_T_SIM_CONFIG_KEY, v -> v > 0);
             deltaTimePrint = getConfigDouble(config, DELTA_T_PRINT_CONFIG_KEY, v -> v > 0 && doubleMultiple(v, deltaTimeSim));
