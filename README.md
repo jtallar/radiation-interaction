@@ -1,4 +1,4 @@
-# Brownian Motion
+# Damped Oscillator + Radiation Interaction
 
 ## What to Install
 - `python3 -m pip install numpy`
@@ -34,14 +34,37 @@ Everything is configured by modifying `config.json`. Available configuration key
    - `delta_t_anim`: timestep between animation prints to file
    - `plot`: determines whether to plot or not single analysis, must be true or false
 
-## Simulation 1 - Damped Oscillator
-To generate executable and run the life simulation
-1. Run `./prepare.sh` in root to generate executables (only required once).
-2. Run `./target/tp4-simu-1.0/damped-osc.sh`, using the following parameters from `config.json`:
-   
-   `static_file`, `dynamic_file`, `max_events`
+# Damped Oscillator
 
-Output will be appended to `dynamic_file`, adding time and particle position and velocity for each event.
+## Simulation
+To generate executable and run damped oscillator simulation
+1. Run `./prepare.sh` in root to generate executables (only required once).
+2. Run `./target/tp4-simu-1.0/damped-osc.sh -Dalgo=algo -Ddt=dt`. Parameters from `config.json` can be overwritten by using `algo` and `dt` properties.
+
+Output will be printed to `dynamic_file`, showing time and particle position and velocity for each timestep.
+
+## Analysis Tools
+
+### analysisOsc.py
+Generate plots and metrics given a single simulation file as input.
+Run `python3 analysisOsc.py [file_1 file_2 ...]`, using parameters from `config.json`.
+
+If one or more filenames are provided, analysis will be performed individually and then condensed for multiple simulations. This can be used to provide one simulation file for each available algorithm. If plot is false, then no graphs are plotted.
+
+Metrics calculated for each simulation are:
+- ECM
+
+Plots shown are:
+- Analytic trajectory + estimated trajectory for each simulation file.
+
+### multipleDtOsc.sh
+This script can be used to run simulation multiple times, given a starting timestep value, a step to increase dt each iteration and a maximum dt.
+`./multipleDtOsc.sh dt_start dt_step dt_end`
+
+The script runs three simulations for each available dt from `dt_start` to the highest `dt_start + K * dt_step` that is lower or equal than `dt_end` using Verlet, Beeman and Gear Predictor-Corrector 5 respectively. Then, it runs `analysisOsc.py` with the three output datafiles as parameters.
+
+### aux_analysisOscDelta.py
+Contains obtained values using the previously mentioned script. It is used to plot ECM = f(dt) for the three algorithms at once. Values should be copied manually to the corresponding lists.
 
 ## Animation Tool
 Generates `simu.xyz` using information from `static_file` and `dynamic_file`.
