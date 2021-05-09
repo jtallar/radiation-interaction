@@ -383,39 +383,3 @@ def plot_multiple_error_bars(x_values_superlist, x_label, y_values_superlist, y_
 
 def hold_execution():
     plt.show(block=True)
-
-def regression_slope(data):
-    # y = data[i], x = i
-    n = len(data)
-    if n <= 1:
-        return 0
-
-    # Using numpy to multiply arrays
-    x = np.linspace(0, n - 1, num=n)
-    y = np.array(data)
-    
-    sum_x, sum_y = np.sum(x), np.sum(y)
-    sum_xy, sum_xx = np.sum(x * y), np.sum(x * x)
-
-    denominator = n * sum_xx - (sum_x ** 2)
-    if denominator == 0:
-        return 0
-    numerator = n * sum_xy - sum_x * sum_y
-    
-    return numerator / denominator
-
-def check_changes(set_1, set_2):
-    if len(set_1) < len(set_2):
-        small_set = set_1
-        big_set = set_2
-    else:
-        small_set = set_2
-        big_set = set_1
-
-    gen_changes = 0
-    for cell in small_set:
-        if cell not in big_set:
-            gen_changes += 1
-    gen_changes += abs(len(set_1) - len(set_2))
-
-    return gen_changes
