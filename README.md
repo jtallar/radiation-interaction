@@ -58,7 +58,7 @@ Plots shown are:
 - Analytic trajectory + estimated trajectory for each simulation file.
 
 ### multipleDtOsc.sh
-This script can be used to run simulation multiple times, given a starting timestep value, a step to increase dt each iteration and a maximum dt.
+This script can be used to run `damped-osc` simulation multiple times, given a starting timestep value, a step to increase dt each iteration and a maximum dt.
 `./multipleDtOsc.sh dt_start dt_step dt_end`
 
 The script runs three simulations for each available dt from `dt_start` to the highest `dt_start + K * dt_step` that is lower or equal than `dt_end` using Verlet, Beeman and Gear Predictor-Corrector 5 respectively. Then, it runs `analysisOsc.py` with the three output datafiles as parameters.
@@ -66,16 +66,23 @@ The script runs three simulations for each available dt from `dt_start` to the h
 ### aux_analysisOscDelta.py
 Contains obtained values using the previously mentioned script. It is used to plot ECM = f(dt) for the three algorithms at once. Values should be copied manually to the corresponding lists.
 
+# Radiation Interaction
+
+## Simulation
+To generate executable and run damped oscillator simulation
+1. Run `./prepare.sh` in root to generate executables (only required once).
+2. Run `./target/tp4-simu-1.0/radiation-interaction.sh -Ddt=dt -Dv0=v0`. Parameters from `config.json` can be overwritten by using `dt` and `v0` properties.
+
+Output will be printed to `dynamic_file`, showing time and particle position and velocity for each timestep.
+
 ## Animation Tool
-Generates `simu.xyz` using information from `static_file` and `dynamic_file`.
-Run `python3 animator.py`, using the following parameters from `config.json`:
+Generates `simulation_file` using information from `dynamic_file`.
+Run `python3 animator.py [dynamic_file]`, using the parameters from `config.json`. If provided, param overwrites `dynamic_file` from config.
 
-   `static_file`, `dynamic_file`, `delta_time_animation`, `max_v_mod`
+To view the animation, you must open `simulation_file` with Ovito:
+`./bin/ovito simulation_file`. 
 
-To view the animation, you must open `simu.xyz` with Ovito:
-`./bin/ovito simu.xyz`. 
-
-Particles will be colored in a scale of colors from cian (static particles) to red (high velocity module), showing how fast each particle is going.
+Particle color shows whether charge is positive (red) or negative (black).
 
 ### Column Mapping 
 Configure the file column mapping as follows:
@@ -87,59 +94,47 @@ Configure the file column mapping as follows:
    - Column 6 - Color - G
    - Column 7 - Color - B
 
-# Analysis Tools
-Analysis can be performed in multiple ways.
+## Analysis Tools
 
-## analysis.py
+### analysisRad.py
 Generate plots and metrics given a single simulation file as input.
-Run `python3 analysis.py [out_filename]`, using the following parameters from `config.json`:
+Run `python3 analysisRad.py [file_1 file_2 ...]`, using parameters from `config.json`.
 
-   `static_file`, `dynamic_file`, `delta_time_analysis`, `delta_time_intercollition`, `delta_v_mod`, `max_v_mod`, `small_dcm_count`, `plot`
+If one or more filenames are provided, analysis will be performed individually and then condensed for multiple simulations. This can be used to provide one simulation file for each timestep or v0, or to use multiple repetitions for each value. If plot is false, then no graphs are plotted.
 
-If a filename is provided, some metrics will be written to filename. If plot is false, then no graphs are plotted.
-
-Metrics calculated are:
-- Small DCM D (single simulation)
-- Collision count
-- Collision frequency
-- Average time between collisions
-- Kinetic energy
+Metrics calculated for each simulation are:
+- Total trajectory length (L)
+- Sum of total energy difference (sum of |ET(0)-ET(t)|)
+- Average of total energy difference
+- Ending motive
 
 Plots shown are:
-- Small particles DCM dependant on time for last half
-- Probability distribution of times between collisions
-- Initial probability distribution of |v|
-- Probability distribution of |v| in last third of simulation
-- Big particle trajectory (with and without zooming in)
+- |ET(t=0) - ET(t>0)| = f(t) with log scale
+- L = f(t)
+- Particle trajectory
 
-## multipleAnalysis.py
-Run analysis on multiple simulation files to plot metrics according to the different iterations or values. It receives a root directory, where each folder should correspond to a parameter value (eg: `101`) with multiple data simulations of that value.
-`python3 multipleAnalysis.py root_directory (N|T) [save_dir]`
+If multiple files are provided, some more metrics are calculated are:
+- Average total energy difference for all files (mean±stdev)
+- Average total trajectory length for all files (mean±stdev)
+- Average number of steps for all files (mean±stdev)
+- Ending count for each possible ending motive
 
-The second parameter indicates mode, whether simulations have a varying number of small particles (N) or temperature (T, by changing initial `max_v_mod`). If save_dir is provided, the plots are saved as `.png` in that directory.
+And some more plots are shown:
+- |ET(t=0) - ET(t>0)| = f(t) with log scale for each dt
+- Average |ET(t=0) - ET(t>0)| = f(t) with error bars for each dt
+- Multiple particle trajectories (both with dt and v0 in legend)
 
-If mode is N, plots shown are:
-- Big particle trajectory, taking one repetition for each N
-- Collision count dependant on N
-- Collision frequency dependant on N
-- Average time between collisions dependant on N
+### multipleDtRad.sh
+This script can be used to run simulation multiple times, given a starting timestep value, a step to increase dt each iteration, a maximum dt and a number of repetitions.
+`./multipleDtRad.sh dt_start dt_step dt_end rep`
 
-If mode is T, plots shown are:
-- Big particle trajectory, taking one repetition for each T
-- Small particles DCM D value dependant on initial max_v_mod
-- Big particle DCM dependant on time for `max_v_mod` = 2.0, for last half of simulation
-- Big particle DCM D value dependant on initial max_v_mod
-- Small particles DCM dependant on time for `max_v_mod` = 2.0, for last half of simulation
-- Small particles DCM D value dependant on initial max_v_mod
+The script runs `rep` simulations for each available dt from `dt_start` to the highest `dt_start + K * dt_step` that is lower or equal than `dt_end`. Initial velocity is set to `10e3`. Then, it runs `analysisRad.py` with the `rep` output datafiles as parameters for each dt.
 
-### multipleN.sh
-This script can be used to run generation and simulation multiple times, given a starting N value, a step to increase N each iteration and the number of repetitions (>= 2) to run for each N in range.
-`./multipleN.sh N_start N_step repetitions`
+### multipleV0.sh
+This script can be used to run `radiation-interaction` simulation multiple times, given a step to increase v0 each iteration and a number of repetitions.
+`./multipleV0.sh v0_step rep`
 
-The script runs the simulation for each available N from `N_start` to the highest `N_start + K * N_step` that is lower or equal than 136. Then, it runs `multipleAnalysis.py` with the output data directory. The plots can be found at directory `pics_N`. Values corresponding to each plot can also be found at file `pics_N/outN.txt`.
+The script runs `rep` simulations for each available v0 from `10e3` to the highest `10e3 + K * v0_step` that is lower or equal than `100e3`. Timestep is set to `1e-16`. Then, it runs `analysisRad.py` with the `rep` output datafiles as parameters for each v0.
 
-### multipleT.sh
-This script can be used to run generation and simulation multiple times, given a starting max velocity module value, a step to increase module each iteration, a maximum module and the number of repetitions (>= 2) to run for each module in range.
-`./multipleT.sh max_v_mod_start max_v_mod_step max_v_mod_stop repetitions`
-
-The script runs the simulation for each available velocity module from `max_v_mod_start` to the highest `max_v_mod_start + K * max_v_mod_step` that is lower or equal than `max_v_mod_stop`. Then, it runs `multipleAnalysis.py` with the output data directory. The plots can be found at directory `pics_T`. Values corresponding to each plot can also be found at file `pics_T/outN.txt`.
+### aux_analysisRadVel.py
+Contains obtained values using the previously mentioned script. It is used to plot L = f(V0) for different initial velocities at once and a probability distribution for each ending motive. Values should be copied manually to the corresponding lists.
