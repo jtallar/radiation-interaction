@@ -9,31 +9,32 @@
 
 ## Configuration
 Everything is configured by modifying `config.json`. Available configuration keys are:
-   - `static_file`: static file filepath
    - `dynamic_file`: dynamic file filepath
-   - `N`: number of small particles, 100 < N < 150
-   - `L`: simulation area side, L > 0
-   - `small_radius`: small particle radius, rp >= 0
-   - `small_mass`: small particle mass, mp > 0
-   - `big_radius`: big particle radius, RP > rp
-   - `big_mass`: big particle mass, MP > mp
-   - `max_v_mod`: initial max particle speed module, vm > 0
-   - `max_events`: maximum amount of events to analyze, maxEvents > 0
-   - `delta_time_animation`: minimum timestep between events for animation, dt > 0
-   - `delta_time_analysis`: minimum timestep between events for analysis, dt > 0
-   - `delta_time_intercollition`: bin width for intercollision plot, dti > 0
-   - `delta_v_mod`: timestep between speeds in histogram, dv > 0
-   - `small_dcm_count`: number of particles to select for small particle DCM calculation, small_dcm_count > 0
+   - `simulation_file`: animation file filepath
+   - `osc`: configurations for damped oscillator
+      - `algo`: name of the algorithm to use
+      - `mass`: particle mass
+      - `k`: coefficient of the restoring force
+      - `gamma`: characteristic gamma quantity
+      - `tf`: end time of simulation
+      - `r0`: initial position
+      - `A`: oscillator amplitude
+   - `rad`: configurations for radiation interaction system
+      - `algo`: name of the algorithm to use
+      - `mass`: particle mass
+      - `k`: Coulomb's constant
+      - `N`: number of static particles per dimension (NxN matrix)
+      - `D`: distance between static particles
+      - `Q`: particle charge
+      - `v0`: particle initial horizontal velocity
+      - `use_seed`: if true use fixed seed, if false use nanoseconds
+      - `seed`: fixed seed value
+   - `delta_t_sim`: timestep between simulation measurements
+   - `delta_t_print`: timestep between simulation prints to file
+   - `delta_t_anim`: timestep between animation prints to file
    - `plot`: determines whether to plot or not single analysis, must be true or false
 
-## Particle generator
-To generate initial particle positions by creating `static_file` and `dynamic_file`. 
-Generates N small particles with random positions and speeds, and 1 stopped big particle at the center. If N cannot be reached in a number of iterations, resets and tries again.
-Run `python3 generator.py`, using the following parameters from `config.json`:
-
-   `static_file`, `dynamic_file`, `N`, `L`, `small_radius`, `small_mass`, `big_radius`, `big_mass`, `max_v_mod`
-
-## Simulation 1
+## Simulation 1 - Damped Oscillator
 To generate executable and run the life simulation
 1. Run `./prepare.sh` in root to generate executables (only required once).
 2. Run `./target/tp4-simu-1.0/damped-osc.sh`, using the following parameters from `config.json`:
